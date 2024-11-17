@@ -13,5 +13,5 @@ router.get('/allusers', authorization([role.admin]) , errorHandler(userControlle
 router.get('/activeuser', authorization([role.admin]) , errorHandler(userController.getActiveUser))
 
 router.patch('/allusers/:id', authorization([role.admin]) , errorHandler(userController.changeUserStatus))
-
+ 
 export default router

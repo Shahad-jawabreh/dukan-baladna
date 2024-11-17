@@ -47,6 +47,9 @@ const productSchema = new Schema({
     description : {
         type : String
     },
+    extraAdding : {
+        type : String
+    },
     status : {
         type : String , 
         enum  : ['active', 'not_active'],
