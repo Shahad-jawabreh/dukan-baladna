@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/information',authorization([role.admin]), categoryController.getAllCategory)
 router.get('/:id', categoryController.getDetails)
-router.get('/',authorization([role.admin,role.user]), categoryController.getActiveCategory)
+router.get('/',authorization([role.admin,role.buyer]), categoryController.getActiveCategory)
 router.patch('/:_id',authorization([role.admin]),fileUpload(fileType.image).single('image'),errorHandler(categoryController.updateCategory))
 router.delete('/:_id', authorization([role.admin]),categoryController.destroy)
 router.post('/',authorization([role.admin]),fileUpload(fileType.image).single('image'),errorHandler(categoryController.createCategory))

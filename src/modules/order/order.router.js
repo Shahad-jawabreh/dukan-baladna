@@ -5,9 +5,9 @@ import errorHandler from '../../utls/asyncHandler.js';
 import authorization from '../../utls/authorization.js';
 const router = Router();
 
-router.post('/',authorization([role.user]),errorHandler(orderController.create))
+router.post('/',authorization([role.buyer]),errorHandler(orderController.create))
 router.get('/all',authorization([role.admin]),errorHandler(orderController.getAllOrder))
-router.get('/userOrder',authorization([role.user]),errorHandler(orderController.getUserOrder))
+router.get('/userOrder',authorization([role.buyer]),errorHandler(orderController.getUserOrder))
 router.patch('/changeStatus/:orderId',authorization([role.admin]),errorHandler(orderController.changeStatus))
 
 

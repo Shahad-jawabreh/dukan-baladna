@@ -6,6 +6,6 @@ import * as reviewController from './review.controller.js'
 import fileUpload, { fileType } from '../../utls/uploadFile/multer.js';
 const router = Router({mergeParams: true});
 
-router.post('/',authorization([role.user]),fileUpload(fileType.image).single('image') ,reviewController.createReview)
+router.post('/',authorization([role.buyer]),fileUpload(fileType.image).single('image') ,reviewController.createReview)
 
 export default router
