@@ -12,7 +12,7 @@ router.post('/',authorization([role.admin]),fileUpload(fileType.image).fields([
     {name :'subImage' ,  maxCount : 5}
 ]),errorHandler(projectController.addProduct));
 
-router.get('/',authorization([role.buyer]), projectController.getProduct)
+router.get('/', projectController.getProduct)
 router.use('/:productId/reviews',reviewRouter)
 
 export default router
