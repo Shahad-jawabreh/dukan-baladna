@@ -10,7 +10,11 @@ export const getAllCategory =async (req,res,next)=>{
  }
 
  export const getActiveCategory =async (req,res,next)=>{
-    const category = await subCategoryModel.find({status:'active'}).select("name image.secure_url")
+    const {_id} = req.params ;
+    if(! await categoryModel.findById(_id)) {
+      return res.json({massege : "this category not found"})
+    }
+    const category = await subCategoryModel.find({status:'active' , categoryId: _id }).select("name image.secure_url")
     return res.status(200).json({category})
  
  }
