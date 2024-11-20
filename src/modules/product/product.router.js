@@ -13,6 +13,7 @@ router.post('/',authorization([role.admin,role.buyer]),fileUpload(fileType.image
 ]),errorHandler(projectController.addProduct));
 
 router.get('/', projectController.getProduct)
+router.get('/info/:_id', projectController.getInfoProduct)
 
 router.use('/:productId/reviews',reviewRouter)
 

@@ -66,3 +66,10 @@ export const getProduct = async (req, res) => {
    }
  };
 
+ export const getInfoProduct = async (req, res) => {
+   const {_id} = req.params ;
+   const product = await productModel.findById(_id)
+   return res.json({product})
+
+ }
+
