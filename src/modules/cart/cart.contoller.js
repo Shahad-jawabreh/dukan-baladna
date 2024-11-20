@@ -1,7 +1,9 @@
 import cartModel from "../../../DB/model/cart.model.js";
 import productModel from "../../../DB/model/product.model.js";
-export const getAllProduct = async(req,res) =>{
-
+export const getCart = async(req,res) =>{
+    const {user_id} = req.params ;
+    const cart = await cartModel.find({userId : user_id});
+    return res.json({cart})
 }
 export const addProduct = async(req,res)=>{
   const userId = req.user._id ;
