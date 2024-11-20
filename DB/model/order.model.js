@@ -26,6 +26,12 @@ const orderSchema = new Schema({
         finalPrice :{
             type : Number,
             required : true
+        },
+        extraAdding : {
+            type : String
+        },
+        size : {
+            type : String
         }
     }],
     finalPrice :{

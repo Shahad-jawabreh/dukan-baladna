@@ -39,15 +39,7 @@ const productSchema = new Schema({
          ref : 'categories',
          required : true
     },
-    subCategoryId : {
-        type : Types.ObjectId ,
-         ref : 'subcategories',
-         required : true
-    },
     description : {
-        type : String
-    },
-    extraAdding : {
         type : String
     },
     status : {
@@ -55,9 +47,6 @@ const productSchema = new Schema({
         enum  : ['active', 'not_active'],
         default : 'active'
     },
-    sizes : [{
-        type : String 
-    }],
     createdBy : {
         type : Types.ObjectId,
         ref : 'users',

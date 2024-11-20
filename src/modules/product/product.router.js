@@ -7,12 +7,13 @@ import reviewRouter from './../review/review.router.js'
 import errorHandler from '../../utls/asyncHandler.js';
 const router = Router();
 
-router.post('/',authorization([role.admin]),fileUpload(fileType.image).fields([
+router.post('/',authorization([role.admin,role.buyer]),fileUpload(fileType.image).fields([
     {name :'mainImage' , maxCount : 1},
     {name :'subImage' ,  maxCount : 5}
 ]),errorHandler(projectController.addProduct));
 
 router.get('/', projectController.getProduct)
+
 router.use('/:productId/reviews',reviewRouter)
 
 export default router
