@@ -5,36 +5,41 @@ export const getCart = async(req,res) =>{
     const cart = await cartModel.find({userId : user_id});
     return res.json({cart})
 }
-export const addProduct = async(req,res)=>{
-  const userId = req.user._id ;
-  const {productId} = req.body ;
-
-
-  const cart = await cartModel.findOne({userId}) ;
-  if(!cart) { 
-    const newCart = await cartModel.create({
-        products: [{
-          productId,
-          quantity: req.body?.quantity || 1 // Add quantity here
-        }],
-        userId
+export const addProduct = async (req, res) => {
+    const userId = req.user._id; // Ensure the user is authenticated with a valid token
+    const { productId, quantity = 1 } = req.body; // Default quantity is 1 if not provided
+  
+ 
+  
+    const cart = await cartModel.findOne({ userId });
+  
+    if (!cart) {
+      // If no cart exists, create a new one
+      const newCart = await cartModel.create({
+        products: [{ productId, quantity }],
+        userId,
       });
-      
-     return res.status(200).json({massege : "success" , newCart})
-  }
-  // Check if the product already exists in the cart
-  const productExists = cart.products.some(element => element.productId == productId);
-  if (productExists) {
-    return res.status(400).json({ message: "this product already exists" });
-  }
-  cart.products.push({
-    productId: productId,
-    quantity: req.body?.quantity || 1 // Add the quantity when pushing the product
-  });
-  await cart.save()
-  // if not exist we will add it to cart
-  return res.json({massege : "added successfully"})
-}
+  
+      return res.status(200).json({ message: 'success', newCart });
+    } else {
+      // If cart exists, you can add/update products in it (this is just an example)
+      const existingProductIndex = cart.products.findIndex(p => p.productId === productId);
+  
+      if (existingProductIndex > -1) {
+        // Update quantity if the product already exists in the cart
+        cart.products[existingProductIndex].quantity += quantity;
+      } else {
+        // Add new product to cart
+        cart.products.push({ productId, quantity });
+      }
+  
+      await cart.save();
+  
+      return res.status(200).json({ message: 'Product added to cart', updatedCart: cart });
+    }
+  };
+  
+  
 
 export const increaseQuantity = async (req,res)=>{
    const {quantity} = req.body ;
