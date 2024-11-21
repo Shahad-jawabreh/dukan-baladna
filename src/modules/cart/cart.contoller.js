@@ -37,7 +37,7 @@ export const addProduct = async (req, res) => {
     
         } else {
           // Add new product to the cart
-          cart.products.push({ productId, quantity });
+          cart.products.push({ productId, quantity , productName :product.name, image : product.mainImage.secure_url });
         }
   
         // Save the updated cart
