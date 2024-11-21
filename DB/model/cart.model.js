@@ -12,6 +12,9 @@ const cartSchema = new Schema({
             type : Types.ObjectId,
             ref  :'products'
         },
+        productName : {
+            type : String
+        },
         quantity : {
             type : Number,
             default : 1

@@ -9,7 +9,11 @@ export const addProduct = async (req, res) => {
     try {
       const userId = req.user._id; // Ensure the user is authenticated with a valid token
       const { productId, quantity = 1 } = req.body; // Default quantity is 1 if not provided
-  
+       
+       const product = await productModel.findById(productId);
+       if (!product) {
+        return res.status(404).json({ message: 'Product not found.' });
+      }
       // Find the user's cart
       let cart = await cartModel.findOne({ userId });
       console.log(cart)
@@ -17,7 +21,7 @@ export const addProduct = async (req, res) => {
         // If no cart exists, create a new one
         const newCart = await cartModel.create({
           userId,
-          products: [{ productId, quantity }],
+          products: [{ productId, quantity , productName :product.name}],
         });
   
         return res.status(201).json({ message: 'Cart created and product added', cart: newCart });
@@ -30,6 +34,7 @@ export const addProduct = async (req, res) => {
         if (existingProduct) {
           // Update quantity if the product already exists in the cart
           existingProduct.quantity += quantity;
+    
         } else {
           // Add new product to the cart
           cart.products.push({ productId, quantity });
