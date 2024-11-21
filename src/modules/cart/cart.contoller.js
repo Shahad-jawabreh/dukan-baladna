@@ -82,7 +82,7 @@ export const decreaseQuantity = async (req,res)=>{
       return res.json({massege: "success",cart})
  }
 export const deleteItem = async (req, res) => {
-    const {productId} = req.body ; 
+    const {productId} = req.params ; 
     const userId = req.user._id ;
     const cart = await cartModel.findOneAndUpdate({userId},{
         $pull : {
