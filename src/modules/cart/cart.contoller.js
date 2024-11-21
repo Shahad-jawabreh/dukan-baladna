@@ -21,7 +21,7 @@ export const addProduct = async (req, res) => {
         // If no cart exists, create a new one
         const newCart = await cartModel.create({
           userId,
-          products: [{ productId, quantity , productName :product.name}],
+          products: [{ productId, quantity , productName :product.name, image : product.mainImage.secure_url}],
         });
   
         return res.status(201).json({ message: 'Cart created and product added', cart: newCart });
@@ -107,10 +107,10 @@ export const clearCart = async (req, res) => {
 }
 
 export const updateQuantity = async (req,res) =>{
-    const { quantity, operator } = req.body;
+    const { operator } = req.body;
     const  userId  = req.user._id;
     const { productId } = req.params;
-    const inc = (operator === "+") ? quantity : -quantity;
+    const inc = (operator === "+") ? 1 : -1;
 
     const cart = await cartModel.findOneAndUpdate(
         {
