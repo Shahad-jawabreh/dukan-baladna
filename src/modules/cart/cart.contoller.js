@@ -6,39 +6,46 @@ export const getCart = async(req,res) =>{
     return res.json({cart})
 }
 export const addProduct = async (req, res) => {
-    const userId = req.user._id; // Ensure the user is authenticated with a valid token
-    const { productId, quantity = 1 } = req.body; // Default quantity is 1 if not provided
+    try {
+      const userId = req.user._id; // Ensure the user is authenticated with a valid token
+      const { productId, quantity = 1 } = req.body; // Default quantity is 1 if not provided
   
- 
+      // Find the user's cart
+      let cart = await cartModel.findOne({ userId });
+      console.log(cart)
+      if (!cart) {
+        // If no cart exists, create a new one
+        const newCart = await cartModel.create({
+          userId,
+          products: [{ productId, quantity }],
+        });
   
-    const cart = await cartModel.findOne({ userId });
-  
-    if (!cart) {
-      // If no cart exists, create a new one
-      const newCart = await cartModel.create({
-        products: [{ productId, quantity }],
-        userId,
-      });
-  
-      return res.status(200).json({ message: 'success', newCart });
-    } else {
-      // If cart exists, you can add/update products in it (this is just an example)
-      const existingProductIndex = cart.products.findIndex(p => p.productId === productId);
-  
-      if (existingProductIndex > -1) {
-        // Update quantity if the product already exists in the cart
-        cart.products[existingProductIndex].quantity += quantity;
+        return res.status(201).json({ message: 'Cart created and product added', cart: newCart });
       } else {
-        // Add new product to cart
-        cart.products.push({ productId, quantity });
+        // If cart exists, check if the product is already in the cart
+        const existingProduct = cart.products.find(
+          (item) => item.productId.toString() === productId
+        );
+  
+        if (existingProduct) {
+          // Update quantity if the product already exists in the cart
+          existingProduct.quantity += quantity;
+        } else {
+          // Add new product to the cart
+          cart.products.push({ productId, quantity });
+        }
+  
+        // Save the updated cart
+        await cart.save();
+  
+        return res.status(200).json({ message: 'Product added to cart', cart });
       }
-  
-      await cart.save();
-  
-      return res.status(200).json({ message: 'Product added to cart', updatedCart: cart });
+    } catch (error) {
+      // Handle errors
+      console.error('Error adding product to cart:', error);
+      return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   };
-  
   
 
 export const increaseQuantity = async (req,res)=>{
