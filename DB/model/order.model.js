@@ -7,7 +7,7 @@ const orderSchema = new Schema({
        required : true
     },
     orderNum : {
-        type : Number
+        type : String
     },
     userName :{
         type : String ,
