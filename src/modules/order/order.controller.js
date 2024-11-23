@@ -66,10 +66,7 @@ export const create =async (req,res,next)=>{
    return res.status(200).json({order})
 }
 export const getAllOrder = async(req, res) => {
-    const orders = await orderModel.find({$or :[
-        {status :'pending'},
-        {status :'confirmed'},
-    ]});
+    const orders = await orderModel.find({});
     return res.status(200).json({orders})
 }
 export const getUserOrder = async(req, res) => {
