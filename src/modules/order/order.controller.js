@@ -3,6 +3,7 @@ import cartModel from "../../../DB/model/cart.model.js";
 import productModel from "../../../DB/model/product.model.js";
 import orderModel from "../../../DB/model/order.model.js";
 import userModel from "../../../DB/model/user.model.js";
+import { customAlphabet } from 'nanoid/non-secure'
 
 
 export const create =async (req,res,next)=>{
@@ -24,7 +25,7 @@ export const create =async (req,res,next)=>{
    let finalProductList = [] ;
    let subTotal = 0 ;
    for(let product of cart.products){
-      const checkProduct = await productModel.findOne({_id:product.productId , stock :{$gte : product.quantity}})
+      const checkProduct = await productModel.findOne({_id:product.productId , stock :{$gt : product.quantity}})
       if(!checkProduct){
          return res.status(400).json({massege : "the quantity is not available"})
       }
@@ -44,7 +45,9 @@ export const create =async (req,res,next)=>{
     products : finalProductList ,
     finalPrice : subTotal - (subTotal * (coupon?.amount || 0)/100 ) ,
     address : user.address ,
-    phoneNumber : user.phoneNumber
+    phoneNumber : user.phoneNumber,
+    userName : user.userName ,
+    orderNum : customAlphabet('1234567890abcdef', 4)()
    })
 
    if(order){

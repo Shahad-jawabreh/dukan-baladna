@@ -6,6 +6,13 @@ const orderSchema = new Schema({
        ref : 'users',
        required : true
     },
+    orderNum : {
+        type : Number
+    },
+    userName :{
+        type : String ,
+        required : true
+    },
     products :[{
         name :{
             type :String
