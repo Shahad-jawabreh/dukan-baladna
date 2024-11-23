@@ -22,7 +22,7 @@ const userSchema = new Schema({
   image: {
     type: Object
   },
-  phone: {
+  phoneNumber: {
     type: String
   },
   address: {

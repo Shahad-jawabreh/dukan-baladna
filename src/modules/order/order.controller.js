@@ -38,13 +38,13 @@ export const create =async (req,res,next)=>{
    }
    console.log(finalProductList)
    const user = await userModel.findById(req.user._id)
-
+    console.log(user)
     const order = await orderModel.create ({
     userId : req.user._id ,
     products : finalProductList ,
     finalPrice : subTotal - (subTotal * (coupon?.amount || 0)/100 ) ,
     address : user.address ,
-    phoneNumber : user.phone
+    phoneNumber : user.phoneNumber
    })
 
    if(order){
