@@ -34,7 +34,7 @@ export const getAllComplaints = async (req, res, next) => {
         const complaints = await complaintModel.find();
 
         // Return the list of complaints as a JSON response
-        return res.status(200).json({ complaint });
+        return res.status(200).json({ complaints });
     } catch (error) {
         next(error); // Pass errors to the error handler middleware
     }
