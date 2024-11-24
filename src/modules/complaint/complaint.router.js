@@ -8,5 +8,6 @@ const router = Router();
 
 router.post('/',authorization([role.saler,role.buyer]),errorHandler(complaintController.create))
 router.get('/',authorization([role.admin]),errorHandler(complaintController.getAllComplaints))
+router.get('/:id',authorization([role.admin]),errorHandler(complaintController.getComplaintById))
 
 export default router
