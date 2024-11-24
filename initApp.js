@@ -8,6 +8,8 @@ import cartRouter from './src/modules/cart/cart.router.js'
 import couponRouter from './src/modules/coupon/coupon.router.js'
 import orderRouter from './src/modules/order/order.router.js'
 import locationRouter from './src/modules/location/location.router.js'
+import complaintRouter from './src/modules/complaint/complaint.router.js'
+
 import cors from 'cors'
 const initApp=(express,app)=>{
     
@@ -16,6 +18,7 @@ const initApp=(express,app)=>{
     connection();
     app.get('/', (req, res)=>{return res.json({massege : "Welcome!"});});
     app.use('/auth',authRouter);
+    app.use('/complaint',complaintRouter);
     app.use('/coupon',couponRouter);
     app.use('/user',userRouter);
     app.use('/category', categoryRouter);
