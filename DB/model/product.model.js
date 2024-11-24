@@ -52,6 +52,10 @@ const productSchema = new Schema({
         ref : 'users',
         required : true
     },
+    salerName : {
+        type : String,
+        required : true
+    }
 
 },{timestamps : true,
     toJSON : {virtuals : true} ,

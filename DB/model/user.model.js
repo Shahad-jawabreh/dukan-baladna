@@ -52,7 +52,22 @@ const userSchema = new Schema({
   avaliable : {
     type: Boolean,
     default: true 
-  }
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0, // Default rating
+    required: function() {
+      return this.role === 'saler'; // Only required if the user is a "saler"
+    }
+  },
+  commission: {
+    type: Number,
+    required: function() {
+      return this.role === 'saler'; // Only required if the user is a "saler"
+    }
+  },
 }, { timestamps: true });
 
 
