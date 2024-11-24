@@ -35,7 +35,7 @@ export const getUserProfile = async (req, res) => {
     return res.status(200).json({message: "update successfully"})
 }
 export const getAllUser = async (req, res) => {
-   const user = await userModel.find({}).select('image.secure_url phoneNumber rating userName status email _id');
+   const user = await userModel.find({}).select('image.secure_url phoneNumber rating userName status email _id role');
    return res.json({user})
 }
 
