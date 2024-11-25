@@ -45,7 +45,7 @@ export const getComplaintById = async (req, res, next) => {
         const id = req.params.id;
         const complaints = await complaintModel.findById(id);
 
-        return res.status(200).json({ complaint });
+        return res.status(200).json({ complaints });
     } catch (error) {
         next(error); // Pass errors to the error handler middleware
     }
