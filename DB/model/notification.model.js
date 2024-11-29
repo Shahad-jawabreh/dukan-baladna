@@ -1,24 +1,24 @@
 import {Schema,Types,model} from 'mongoose'
 
 const notificationSchema = new Schema({
-    email : {
+    from : {
         type : String ,
         required : true
     },
-    userName :{ 
+    to :{ 
         type : String ,
     },
-    subject  : {
+    title  : {
         type : String ,
         required : true
-    },
-    details : {
+    },//
+    body : {
         type : String
     },
     status : {
             type: String,
-            enum: ['resolve','pending'],
-            default: 'pending' // Default to 'buyer' based on the second schema       
+            enum: ['seen','unseen'],
+            default: 'unseen' // Default to 'buyer' based on the second schema       
     }
 },
 {timestamps : true})
