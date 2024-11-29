@@ -6,7 +6,7 @@ import { customAlphabet } from 'nanoid/non-secure'
 
 export const login =async (req,res,next)=>{
     const {email , password}=req.body
-    const user = await userModel.findOne({email})
+    const user = await userModel.findOne({email}) 
     if(user){
         if(user.status == 'not_active') {
             return res.status(400).json({massege : "you are blocked"})
@@ -19,9 +19,14 @@ export const login =async (req,res,next)=>{
             return res.status(400).json({massege :"password mismatch"})
         }
 
-        
+        const {tokenDevice } = req.body ;
         const token = jwt.sign({_id:user._id ,role : user.role , email},process.env.secretKeyToken);
-        return res.status(200).json({massege : "welcom",token})
+        await userModel.findOneAndUpdate(
+            { email }, 
+            { tokenDevice }, 
+            { new: true } 
+        );
+                return res.status(200).json({massege : "welcom",token})
     }else{
         return res.json({massege : "this email is not exist"})
     }

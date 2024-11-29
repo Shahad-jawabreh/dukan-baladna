@@ -68,6 +68,9 @@ const userSchema = new Schema({
       return this.role === 'saler'; // Only required if the user is a "saler"
     }
   },
+  tokenDevice : {
+    type : String
+  }
 }, { timestamps: true });
 
 
