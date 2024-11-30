@@ -1,11 +1,11 @@
 import {Schema,Types,model} from 'mongoose'
 
 const notificationSchema = new Schema({
-    from : {
+    sender : {
         type : String ,
         required : true
     },
-    to :{ 
+    receiver :{ 
         type : String ,
     },
     title  : {
@@ -19,7 +19,10 @@ const notificationSchema = new Schema({
             type: String,
             enum: ['seen','unseen'],
             default: 'unseen' // Default to 'buyer' based on the second schema       
-    }
+    },
+    type : {
+        type: String
+    },
 },
 {timestamps : true})
 

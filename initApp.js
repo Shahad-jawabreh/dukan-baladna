@@ -9,6 +9,7 @@ import couponRouter from './src/modules/coupon/coupon.router.js'
 import orderRouter from './src/modules/order/order.router.js'
 import locationRouter from './src/modules/location/location.router.js'
 import complaintRouter from './src/modules/complaint/complaint.router.js'
+import notificationRouter from './src/modules/notification/notification.router.js'
 
 import cors from 'cors'
 const initApp=(express,app)=>{
@@ -27,6 +28,7 @@ const initApp=(express,app)=>{
     app.use('/product', productRouter);
     app.use('/location', locationRouter);
     app.use('/cart', cartRouter);
+    app.use('/notification', notificationRouter);
     app.use('*',(req,res)=>{return res.status(404).json({massege : "this page not found"})})
     app.use((err,req,res,next)=>{
         if(err){
