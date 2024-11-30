@@ -10,14 +10,17 @@ try {
     if (!sender || !receiver || !type || !title || !body) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
-
+     
+    const senderID = await userModel.findById(sender);
+    const senderImage = senderID?.image?.secure_url
     // Create and save notification
     const notification = await notificationModel.create({
-      sender,
+        sender:senderID.userName,
       receiver,
       type,
       title,
       body,
+      senderImage
     });
 
     

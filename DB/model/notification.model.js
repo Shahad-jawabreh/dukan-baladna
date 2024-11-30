@@ -23,6 +23,9 @@ const notificationSchema = new Schema({
     type : {
         type: String
     },
+    senderImage :{
+        type: String
+    }
 },
 {timestamps : true})
 
