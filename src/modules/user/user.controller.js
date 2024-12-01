@@ -11,7 +11,7 @@ export const confirmEmail =async (req,res,next)=>{
    return res.json({massege : "confirm email successfully"})
 }
 export const getUserProfile = async (req, res) => {
-    const user = await userModel.findById(req.user._id).select("image description userName email _id");
+    const user = await userModel.findById(req.user._id);
     if (user.status == "not_active") {
         return res.status(400).json({massega : "you are blocked"})
     }
