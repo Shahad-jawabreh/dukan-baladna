@@ -18,15 +18,9 @@ export const login =async (req,res,next)=>{
         if(!checkPassword) {
             return res.status(400).json({massege :"password mismatch"})
         }
-
-        const {tokenDevice } = req.body ;
         const token = jwt.sign({_id:user._id ,role : user.role , email},process.env.secretKeyToken);
-        await userModel.findOneAndUpdate(
-            { email }, 
-            { tokenDevice }, 
-            { new: true } 
-        );
-                return res.status(200).json({massege : "welcom",token})
+        
+        return res.status(200).json({massege : "welcom",token,role:user.role})
     }else{
         return res.json({massege : "this email is not exist"})
     }
