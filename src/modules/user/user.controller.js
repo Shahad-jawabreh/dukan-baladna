@@ -27,8 +27,8 @@ export const getUserProfile = async (req, res) => {
       req.body.image = {secure_url,public_url}
   }
   if(req.body.email) {
-     const userExist = await userModel.findOne({email:req.body.email})
-     if(userExist)return res.status(400).json({message:'eamil is already exists'});
+     const userExist = await userModel.findOne({email:req.body.email, _id :{$ne:id} })
+     if(userExist)return res.status(400).json({message:'email is already exists'});
   }
   console.log({...req.body});
 
