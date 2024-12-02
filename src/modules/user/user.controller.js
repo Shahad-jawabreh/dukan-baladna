@@ -1,6 +1,7 @@
 import userModel from "../../../DB/model/user.model.js";
 import jwt from 'jsonwebtoken' ;
 import cloudinary from "./../../utls/uploadFile/cloudinary.js";
+import bcrypt from 'bcryptjs' 
 
 export const confirmEmail =async (req,res,next)=>{
     const token = req.params.token ;
@@ -30,6 +31,9 @@ export const getUserProfile = async (req, res) => {
      const userExist = await userModel.findOne({email:req.body.email, _id :{$ne:id} })
      if(userExist)return res.status(400).json({message:'email is already exists'});
   }
+  if(req.body.password) {
+    req.body.password = await bcrypt.hash(req.body.password, parseInt(process.env.SALT))
+ }
   console.log({...req.body});
 
     const update = await userModel.findByIdAndUpdate(id , {...req.body},{ new: true });
