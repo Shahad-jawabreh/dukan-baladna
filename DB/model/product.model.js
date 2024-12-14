@@ -34,10 +34,14 @@ const productSchema = new Schema({
     priceAfterDiscount : {
         type : Number 
     },
-    categoryId : {
-        type : Types.ObjectId ,
+    category : {
+        type : String ,
          ref : 'categories',
          required : true
+    },
+    DeliveryStatus : {
+        type : String ,
+        enum  : ['فوري', 'حسب الطلب'],
     },
     description : {
         type : String

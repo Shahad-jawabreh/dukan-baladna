@@ -5,8 +5,33 @@ import cloudinary from "../../utls/uploadFile/cloudinary.js";
 import { pagination } from "../../utls/pagination.js";
 import userModel from "../../../DB/model/user.model.js";
 
+const categoriesKeywords = {
+  "مخبوزات": ["خبز", "كعك", "فطائر", "مناقيش", "بسكويت"],
+  "مقبلات": ["حمص", "بابا غنوج", "مقالي", "متبل", "فلافل"],
+  "مخللات": ["مخلل", "مخلل خيار", "زيتون", "مخلل جزر"],
+  "عصائر": ["عصير", "ليمون", "برتقال", "تفاح", "كيوي", "عصير فواكه"],
+  "أجبان وألبان": ["لبنة", "جبنة", "زبادي", "حليب", "قشطة"],
+  "سلطات": ["سلطة", "تبولة", "فتوش", "سلطة جرجير", "سلطة خضار"],
+  "أعشاب وورقيات": ["نعناع", "ريحان", "مردقوش", "زعتر", "كزبرة", "بقدونس"],
+  "الأطباق الرئيسية": ["منسف","اوزة" , "يلنجي" , "كبسة", "مقلوبة", "محشي", "مخشي", "مقلوبة لحم", "كفتة", "دجاج", "شاورما"],
+  "حلويات": ["كعكة", "كيك","كيكه", "كيكة", "بسبوسة", "بقلاوة", "مفروكة", "أم علي", "كنافة", "قطايف", "معمول"],
+};
+
+// Function to detect the category
+function detectCategory(productName, description) {
+  let text = `${productName} ${description}`.toLowerCase();
+  for (let category in categoriesKeywords) {
+    for (let keyword of categoriesKeywords[category]) {
+      if (text.includes(keyword.toLowerCase())) {
+        return category;
+      }
+    }
+  }
+  return null; // Return null if no category is detected
+}
+
 export const addProduct = async (req, res) => {
-  const { name, price, categoryId } = req.body;
+  const { name, price, description } = req.body;
 
   try {
     // Check if the product already exists
@@ -15,17 +40,21 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: "This product already exists" });
     }
 
-    // Check if the category exists
-    const category = await categoryModel.findById(categoryId);
-    if (!category) {
-      return res.status(400).json({ message: "This category does not exist" });
+    // Detect the category automatically based on name and description
+    const detectedCategory = detectCategory(name, description);
+
+    // If no category was detected, return an error
+    if (!detectedCategory) {
+      return res.status(400).json({ message: "Could not detect a valid category for the product" });
     }
+
+    // Add the detected category to the product
+    req.body.category = detectedCategory;
 
     // Prepare the product data
     req.body.slug = slugify(name, { lower: true });  // Ensure the slug is lowercase and URL-friendly
     req.body.createdBy = req.user._id; // Use the logged-in user's ID
 
-    // Add seller information if the user is a seller
     const user = await userModel.findById(req.user._id);
     if (user.role === 'saler') {
       req.body.salerName = user.userName;
@@ -62,6 +91,7 @@ export const addProduct = async (req, res) => {
     return res.status(500).json({ message: "An error occurred while adding the product" });
   }
 };
+
 
 export const getProduct = async (req, res) => {
    try {
