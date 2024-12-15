@@ -35,7 +35,7 @@ const productSchema = new Schema({
          ref : 'categories',
          required : true
     },
-    DeliveryStatus : {
+    deliveryStatus : {
         type : String ,
         enum  : ['فوري', 'حسب الطلب'],
     },
@@ -55,7 +55,13 @@ const productSchema = new Schema({
     salerName : {
         type : String,
         required : true
-    }
+    },
+    addOns: [
+        {
+            name: { type: String }, 
+            price: { type: Number}, 
+        },
+    ],
 
 },{timestamps : true,
     toJSON : {virtuals : true} ,

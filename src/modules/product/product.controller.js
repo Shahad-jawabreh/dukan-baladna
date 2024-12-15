@@ -7,7 +7,7 @@ import userModel from "../../../DB/model/user.model.js";
 
 // Function to detect the category
 export const addProduct = async (req, res) => {
-  const { name, price, description , detectedCategory } = req.body;
+  const { name, price, detectedCategory , deliveryStatus , addOns} = req.body;
 
   try {
     // Check if the product already exists
@@ -16,8 +16,22 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: "This product already exists" });
     }
 
-  
+    if (deliveryStatus == "فوري") {
+      req.body.deliveryStatus = deliveryStatus;
+      req.body.stock = parseInt(stock, 10); // Ensure stock is a number
+      if (isNaN(req.body.stock) || req.body.stock < 0) {
+        return res.status(400).json({ message: "Invalid stock value" });
+      }
+    } else {
+      req.body.deliveryStatus = "حسب الطلب";
+    }
 
+   if (addOns) {
+      req.body.addOns = addOns.map((addOn) => ({
+        name: addOn.name,
+        price: addOn.price,
+      }));
+    }
     // Add the detected category to the product
     req.body.category = detectedCategory;
 
@@ -41,14 +55,7 @@ export const addProduct = async (req, res) => {
     });
     req.body.mainImage = { secure_url, public_id };
 
-    // Handle sub-images upload
-    req.body.subImage = [];
-    for (const file of req.files.subImage) {
-      const { secure_url, public_id } = await cloudinary.uploader.upload(file.path, {
-        folder: `${process.env.appname}/products/${name}/subimage`
-      });
-      req.body.subImage.push({ secure_url, public_id });
-    }
+    
 
     // Create the product in the database
     const addedProduct = await productModel.create(req.body);
