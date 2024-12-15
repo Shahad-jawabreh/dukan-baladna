@@ -7,8 +7,7 @@ const productSchema = new Schema({
         unique : true
     },
     mainImage : {
-        type : Object ,
-        required : true
+        type : Object 
     },
     slug : {
         type : String ,
@@ -60,7 +59,7 @@ const productSchema = new Schema({
         {
             name: { type: String }, 
             price: { type: Number}, 
-        },
+        }
     ],
 
 },{timestamps : true,
