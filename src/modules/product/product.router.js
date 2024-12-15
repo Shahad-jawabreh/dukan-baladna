@@ -7,10 +7,7 @@ import reviewRouter from './../review/review.router.js'
 import errorHandler from '../../utls/asyncHandler.js';
 const router = Router();
 
-router.post('/',authorization([role.admin,role.saler]),fileUpload(fileType.image).fields([
-    {name :'mainImage' , maxCount : 1},
-    {name :'subImage' ,  maxCount : 5}
-]),errorHandler(projectController.addProduct));
+router.post('/',authorization([role.admin,role.saler]),fileUpload(fileType.image).single('mainImage') ,errorHandler(projectController.addProduct));
 
 router.get('/', projectController.getProduct)
 router.get('/info/:_id', projectController.getInfoProduct)

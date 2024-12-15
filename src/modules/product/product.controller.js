@@ -7,7 +7,7 @@ import userModel from "../../../DB/model/user.model.js";
 
 // Function to detect the category
 export const addProduct = async (req, res) => {
-  const { name, price, detectedCategory , deliveryStatus , addOns} = req.body;
+  const { name, price, detectedCategory, deliveryStatus, addOns, stock } = req.body; // Ensure stock is passed in the request body
 
   try {
     // Check if the product already exists
@@ -16,6 +16,7 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: "This product already exists" });
     }
 
+    // Handle delivery status and stock
     if (deliveryStatus == "فوري") {
       req.body.deliveryStatus = deliveryStatus;
       req.body.stock = parseInt(stock, 10); // Ensure stock is a number
@@ -26,17 +27,20 @@ export const addProduct = async (req, res) => {
       req.body.deliveryStatus = "حسب الطلب";
     }
 
-   if (addOns) {
+    // Handle addOns if they exist
+    if (addOns && Array.isArray(addOns)) {
       req.body.addOns = addOns.map((addOn) => ({
         name: addOn.name,
         price: addOn.price,
       }));
     }
+
     // Add the detected category to the product
     req.body.category = detectedCategory;
 
-    // Prepare the product data
-    req.body.slug = slugify(name, { lower: true });  // Ensure the slug is lowercase and URL-friendly
+    // Generate slug from the name
+    req.body.slug = slugify(name || 'default-name', { lower: true });  // Ensure name is not null or undefined
+
     req.body.createdBy = req.user._id; // Use the logged-in user's ID
 
     const user = await userModel.findById(req.user._id);
@@ -48,14 +52,15 @@ export const addProduct = async (req, res) => {
     if (req.body.discount) {
       req.body.priceAfterDiscount = price - ((price * (req.body.discount || 0)) / 100);
     }
+console.log(req.file);
+        if(req.file){
+             const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
+                 folder : `${process.env.appname}/product`
+             })
+             req.body.mainImage = { secure_url, public_url };
+         }
 
-    // Handle main image upload
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.mainImage[0].path, {
-      folder: `${process.env.appname}/products/${name}`
-    });
-    req.body.mainImage = { secure_url, public_id };
-
-    
+      
 
     // Create the product in the database
     const addedProduct = await productModel.create(req.body);
@@ -65,10 +70,9 @@ export const addProduct = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "An error occurred while adding the product" });
+    return res.status(500).json({ message: error.message });
   }
 };
-
 
 export const getProduct = async (req, res) => {
    try {
