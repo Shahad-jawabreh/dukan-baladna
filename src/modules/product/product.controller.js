@@ -28,11 +28,8 @@ export const addProduct = async (req, res) => {
     }
 
     // Handle addOns if they exist
-    if (addOns && Array.isArray(addOns)) {
-      req.body.addOns = addOns.map((addOn) => ({
-        name: addOn.name,
-        price: addOn.price,
-      }));
+    if (addOns) {
+      req.body.addOns = addOns
     }
 
     // Add the detected category to the product
