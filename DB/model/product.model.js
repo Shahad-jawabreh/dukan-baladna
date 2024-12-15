@@ -10,10 +10,6 @@ const productSchema = new Schema({
         type : Object ,
         required : true
     },
-    subImage :[{
-        type : Object ,
-        required : true
-    }],
     slug : {
         type : String ,
         required : true
