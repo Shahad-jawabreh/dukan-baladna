@@ -29,7 +29,7 @@ export const addProduct = async (req, res) => {
 
     // Handle addOns if they exist
     if (addOns) {
-      addOns = JSON.parse(addOns);
+      const parsedAddOns = JSON.parse(req.body.addOns);
       req.body.addOns = addOns.map((addOn) => ({
         name: addOn.name,
         price: addOn.price,
