@@ -31,7 +31,6 @@ const productSchema = new Schema({
     },
     category : {
         type : String ,
-         ref : 'categories',
          required : true
     },
     deliveryStatus : {
