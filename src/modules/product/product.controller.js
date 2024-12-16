@@ -29,10 +29,7 @@ export const addProduct = async (req, res) => {
 
     // Handle addOns if they exist
     if (addOns) {
-      req.body.addOns = addOns.map((addOn) => ({
-        name: addOn.name,
-        price: addOn.price,
-      }));
+      req.body.addOns = addOns;
     }
 
     // Add the detected category to the product
@@ -52,7 +49,7 @@ export const addProduct = async (req, res) => {
     if (req.body.discount) {
       req.body.priceAfterDiscount = price - ((price * (req.body.discount || 0)) / 100);
     }
-console.log(req.file);
+       console.log(req.file);
         if(req.file){
              const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
                  folder : `${process.env.appname}/product`
