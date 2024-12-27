@@ -6,6 +6,7 @@ import { role } from '../../enum/enum.js';
 const router = Router();
 
 router.post('/',errorHandler(notificationController.createNotification))
+router.patch('/:id',errorHandler(notificationController.updateStatus))
 router.get('/',authorization(Object.values(role)),errorHandler(notificationController.getNotification))
 
 export default router

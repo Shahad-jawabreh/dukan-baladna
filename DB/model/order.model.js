@@ -39,8 +39,12 @@ const orderSchema = new Schema({
         },
         size : {
             type : String
-        }
+        },
     }],
+    cookerId :{ 
+       type : String ,
+       required : true
+    },
     finalPrice :{
         type : Number,
         required : true   
@@ -58,10 +62,10 @@ const orderSchema = new Schema({
         enum : ['cash', 'cart'],
         default : 'cash'
     },
-    status :{
+    status: { // حالة الصنف
         type: String,
-        enum : ['pending','cancelled','confirmed','onway','delivered'],
-        default : 'pending'
+        enum: ['معلق','ملغي','تم التأكيد','في الطريق','تم التوصيل','تم ارسالة للتوصيل'],
+        default: 'معلق'
     },
     rejectReson : {
         type : String

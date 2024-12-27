@@ -6,9 +6,9 @@ import authorization from '../../utls/authorization.js';
 const router = Router();
 
 router.post('/',authorization([role.buyer]),errorHandler(orderController.create))
-router.get('/all',authorization([role.admin]),errorHandler(orderController.getAllOrder))
+router.get('/',authorization([role.saler]),errorHandler(orderController.getOrder))
 router.get('/userOrder',authorization([role.buyer]),errorHandler(orderController.getUserOrder))
-router.patch('/changeStatus/:orderId',authorization([role.admin]),errorHandler(orderController.changeStatus))
+router.patch('/:orderId',authorization([role.saler]),errorHandler(orderController.changeOrderStatus))
 
 
 export default router

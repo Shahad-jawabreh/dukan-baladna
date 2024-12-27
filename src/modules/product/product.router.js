@@ -8,7 +8,8 @@ import errorHandler from '../../utls/asyncHandler.js';
 const router = Router();
 
 router.post('/',authorization([role.admin,role.saler]),fileUpload(fileType.image).single('mainImage') ,errorHandler(projectController.addProduct));
-
+router.get('/cooker/:id', projectController.getProductForCooker)
+router.patch('/:id', authorization(role.saler),fileUpload(fileType.image).single('image') ,errorHandler(projectController.updateProduct))
 router.get('/', projectController.getProduct)
 router.get('/info/:_id', projectController.getInfoProduct)
 

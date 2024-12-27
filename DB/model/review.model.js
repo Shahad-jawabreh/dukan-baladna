@@ -16,10 +16,19 @@ const reviewSchema =new Schema({
         ref : 'users',
         required : true
     },
+    userName : {
+        type : String
+    },
+    productName : {
+        type : String
+    },
     productId : {
         type : Types.ObjectId ,
         ref : 'products',
         required : true
+    },
+    reply : {
+        type : String
     },
     image : {
         type : Object

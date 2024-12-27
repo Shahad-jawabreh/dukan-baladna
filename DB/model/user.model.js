@@ -68,8 +68,8 @@ const userSchema = new Schema({
       return this.role === 'saler'; // Only required if the user is a "saler"
     }
   },
-  tokenDevice : {
-    type : String
+  specialization: {  // New field added for specialization
+    type: String, 
   }
 }, { timestamps: true });
 

@@ -4,6 +4,7 @@ import categoryModel from "../../../DB/model/category.model.js";
 import cloudinary from "../../utls/uploadFile/cloudinary.js";
 import { pagination } from "../../utls/pagination.js";
 import userModel from "../../../DB/model/user.model.js";
+import orderModel from "../../../DB/model/order.model.js";
 
 // Function to detect the category
 export const addProduct = async (req, res) => {
@@ -28,14 +29,25 @@ export const addProduct = async (req, res) => {
     }
 
     // Handle addOns if they exist
-    if (addOns) {
-      const parsedAddOns = JSON.parse(req.body.addOns);
-      req.body.addOns = parsedAddOns.map((addOn) => ({
-        name: addOn.name,
-        price: addOn.price,
-      }));
-    }
+    console.log(addOns);
 
+    
+    if (addOns) {
+      try {
+        // In case the data is received as a string, parse it
+        const parsedAddOns = Array.isArray(addOns) ? addOns : JSON.parse(addOns);
+        console.log(typeof parsedAddOns);  // To see the parsed array
+    
+        // Now you can safely map through the array
+        req.body.addOns = parsedAddOns.map((addOn) => ({
+          name: addOn.name,
+          price: addOn.price,
+        }));
+      } catch (error) {
+        console.error("Error parsing addOns:", error);
+        return res.status(400).json({ message: "Invalid addOns format" });
+      }
+    }
     // Add the detected category to the product
     req.body.category = detectedCategory;
 
@@ -53,8 +65,10 @@ export const addProduct = async (req, res) => {
     if (req.body.discount) {
       req.body.priceAfterDiscount = price - ((price * (req.body.discount || 0)) / 100);
     }
-       console.log(req.file);
+
         if(req.file){
+           console.log("req.file");
+
              const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
                  folder : `${process.env.appname}/product`
              })
@@ -91,6 +105,7 @@ export const getProduct = async (req, res) => {
      // Execute query
      const products = await productModel
        .find(queryObj)
+       .select({status : "مفعل"})
        .sort(req.query.sort || queryObj.name)
        .skip(skip)
        .limit(limit)
@@ -109,10 +124,110 @@ export const getProduct = async (req, res) => {
    }
  };
 
+ export const getProductForCooker = async (req, res) => {
+  try {
+    const count =  0 ;
+    const page = req.query.page || 1;
+    const { limit, skip } = pagination(page, req.query.limit || 12);
+
+    // Build query object
+    const queryObj = { ...req.query };
+    const excludeFields = ['limit', 'page', 'sort', 'search'];
+    excludeFields.forEach((field) => delete queryObj[field]);
+     
+
+    if (req.query.search) {
+      queryObj.name = { $regex: `^${req.query.search}` };
+    }
+    // Execute query
+    const products = await productModel
+    .find({ createdBy: req.params.id })
+    .select('name price mainImage status') // Only select name and price
+    .sort(req.query.sort || 'name') // Sort products based on query or default to name
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'reviews',
+      populate: {
+        path: 'userId',
+        select: 'userName _id',
+      },
+    });
+  
+  // Fetch all orders with the productId
+  const numberOfOrders = await orderModel.find().select('products.productId');
+  
+  for (let product of products) {
+    let productCount = 0;
+  
+    // Count how many orders contain this product
+    numberOfOrders.forEach(order => {
+      order.products.forEach(item => {
+        if (item.productId.toString() === product._id.toString()) {
+          productCount++;
+        }
+      });
+    });
+  
+    // Add the order count directly to each product object
+    product.orderCount = productCount;
+  }
+  
+  const productsWithAvgRating = products.map(product => {
+    let rating = 0;
+    if (product.reviews.length > 0) {
+      const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+      rating = parseFloat((totalRating / product.reviews.length).toFixed(1));
+    }
+    return {
+      _id: product._id,
+      name: product.name,
+      status: product.status,
+      price: product.price,
+      orderCount: product.orderCount, 
+      rating,  // Add the calculated average rating
+      reviews : product.reviews,
+      mainImage :product.mainImage
+    };
+  });
+
+    return res.json({ message: "Products retriev successfully", data: productsWithAvgRating });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
  export const getInfoProduct = async (req, res) => {
    const {_id} = req.params ;
-   const product = await productModel.findById(_id)
+   const product = await productModel.findById(_id).populate({
+    path: 'reviews',
+    populate: {
+      path: 'userId',
+      select: 'userName -_id',
+    },
+  });
    return res.json({product})
-
  }
 
+ export const updateProduct = async(req, res) =>{
+    const {id} = req.params ;
+    if(req.file){
+      const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
+          folder : `${process.env.appname}/product`
+      })
+      console.log(secure_url);
+           req.body.mainImage = {secure_url,public_url}
+  }
+  if(req.body.name) {
+     const productExist = await productModel.findOne({name:req.body.name, _id :{$ne:id} , createdBy : req.user._id })
+     if(productExist)return res.status(400).json({message:'هذا المنتج موجود بالفعل'});
+  }
+  console.log({...req.body});
+
+    const update = await productModel.findByIdAndUpdate(id , {...req.body},{ new: true });
+    if(!update) { 
+         return res.status(400).json({message: "error updating"})
+    }
+    return res.status(200).json({message: "update successfully"})
+
+ }

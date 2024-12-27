@@ -4,7 +4,6 @@ const productSchema = new Schema({
     name : {
         type : String , 
         required : true,
-        unique : true
     },
     mainImage : {
         type : Object 
@@ -40,10 +39,11 @@ const productSchema = new Schema({
     description : {
         type : String
     },
+    
     status : {
         type : String , 
-        enum  : ['active', 'not_active'],
-        default : 'active'
+        enum  : ['مفعل', 'غير مفعل'],
+        default : 'مفعل'
     },
     createdBy : {
         type : Types.ObjectId,
