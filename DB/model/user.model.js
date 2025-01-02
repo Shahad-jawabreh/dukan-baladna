@@ -64,9 +64,6 @@ const userSchema = new Schema({
   },
   commission: {
     type: Number,
-    required: function() {
-      return this.role === 'saler'; // Only required if the user is a "saler"
-    }
   },
   specialization: { // for cooker
     type: String, 

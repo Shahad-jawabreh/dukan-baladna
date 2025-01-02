@@ -105,17 +105,9 @@ export const getProduct = async (req, res) => {
      // Execute query
      const products = await productModel
        .find(queryObj)
-       .select({status : "مفعل"})
        .sort(req.query.sort || queryObj.name)
        .skip(skip)
        .limit(limit)
-       .populate({
-         path: 'reviews',
-         populate: {
-           path: 'userId',
-           select: 'userName -_id',
-         },
-       });
      
      return res.json({ message: "Products retrieved successfully", data: products });
    } catch (error) {
