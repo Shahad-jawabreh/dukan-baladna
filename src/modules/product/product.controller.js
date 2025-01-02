@@ -116,14 +116,13 @@ export const getProduct = async (req, res) => {
            select: 'userName -_id',
          },
        });
- 
+     
      return res.json({ message: "Products retrieved successfully", data: products });
    } catch (error) {
      console.error(error);
      return res.status(500).json({ message: "Internal server error", error: error.message });
    }
  };
-
  export const getProductForCooker = async (req, res) => {
   try {
     const count =  0 ;

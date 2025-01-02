@@ -7,6 +7,7 @@ const router = Router();
 
 router.post('/',authorization([role.buyer]),errorHandler(orderController.create))
 router.get('/',authorization([role.saler]),errorHandler(orderController.getOrder))
+router.get('/all',errorHandler(orderController.getallOrder))
 router.get('/userOrder',authorization([role.buyer]),errorHandler(orderController.getUserOrder))
 router.patch('/:orderId',authorization([role.saler]),errorHandler(orderController.changeOrderStatus))
 

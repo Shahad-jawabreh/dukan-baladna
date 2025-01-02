@@ -27,11 +27,11 @@ export const login =async (req,res,next)=>{
 }
 
 export const signup =async (req,res)=>{
-    const {userName, password, email} = req.body; 
+    const {userName, password, email,specialization} = req.body; 
     const findUser = await userModel.find({email})
     if(findUser.length == 0){
         const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
-        const user = await userModel.create({userName, password:hashPassword, email})
+        const user = await userModel.create({userName, password:hashPassword, email,specialization})
         const token = jwt.sign({_id:user._id ,role : user.role ,email},process.env.secretKeyToken, { expiresIn: '2h' });
         const subject = "confirm email" ;
         const html = `<a href='${req.protocol}://${req.headers.host}/user/confirmemail/${token}'>confirm email</a>`

@@ -49,7 +49,7 @@ const userSchema = new Schema({
     type: String,
     default: null
   },
-  avaliable : {
+  avaliable : { // for driver
     type: Boolean,
     default: true 
   },
@@ -68,7 +68,7 @@ const userSchema = new Schema({
       return this.role === 'saler'; // Only required if the user is a "saler"
     }
   },
-  specialization: {  // New field added for specialization
+  specialization: { // for cooker
     type: String, 
   }
 }, { timestamps: true });

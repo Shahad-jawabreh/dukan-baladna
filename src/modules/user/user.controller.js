@@ -32,6 +32,11 @@ export const getUserProfile = async (req, res) => {
      if(userExist)return res.status(400).json({message:'email is already exists'});
   }
   if(req.body.password) {
+    const userExist = await userModel.findById(id).select('password')
+    const checkPassword =await bcrypt.compare(req.body.pastPassword, userExist.password)
+            if(!checkPassword) {
+                return res.status(400).json({massege :"password mismatch"})
+            }
     req.body.password = await bcrypt.hash(req.body.password, parseInt(process.env.SALT))
  }
   console.log({...req.body});
@@ -43,7 +48,8 @@ export const getUserProfile = async (req, res) => {
     return res.status(200).json({message: "update successfully"})
 }
 export const getAllUser = async (req, res) => {
-   const user = await userModel.find({}).select('image.secure_url phoneNumber rating userName status email _id role');
+    const user = await userModel.find({ role: { $ne: "admin" } })
+    .select('image.secure_url phoneNumber rating userName status email _id role address');
    return res.json({user})
 }
 

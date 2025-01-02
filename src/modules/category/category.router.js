@@ -13,5 +13,7 @@ router.get('/', categoryController.getActiveCategory)
 router.patch('/:_id',authorization([role.admin]),fileUpload(fileType.image).single('image'),errorHandler(categoryController.updateCategory))
 router.delete('/:_id', authorization([role.admin]),categoryController.destroy)
 router.post('/',authorization([role.admin]),fileUpload(fileType.image).single('image'),errorHandler(categoryController.createCategory))
-router.use('/:_id/subCategory' , subCategoryRouter);
+router.get('/:_id/product' , categoryController.subProduct);
+
+//router.use('/:_id/subCategory' , subCategoryRouter);
 export default router

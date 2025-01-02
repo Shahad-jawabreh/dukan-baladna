@@ -48,6 +48,9 @@ export const create = async (req, res, next) => {
             finalProductList.push(product);
         }
 
+        const deadline = new Date();
+        deadline.setDate(deadline.getDate() + 2); // Set deadline to 2 days from now
+
         const user = await userModel.findById(req.user._id);
 
         const order = await orderModel.create({
@@ -58,6 +61,7 @@ export const create = async (req, res, next) => {
             phoneNumber: user.phoneNumber,
             userName: user.userName,
             orderNum: customAlphabet("1234567890abcdef", 4)(),
+            deadline: deadline, 
         });
 
         if (order) {
@@ -101,14 +105,22 @@ export const getOrder = async (req, res) => {
     }
 };
 
-
+export const getallOrder = async (req, res) => {
+    try {
+        const orders = await orderModel.find();
+        return res.status(200).json({ orders: orders });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred", error });
+    }
+}
 export const getUserOrder = async(req, res) => {
     const orders = await orderModel.find({userId : req.user._id});
     return res.status(200).json({orders})
 }
 export const changeOrderStatus = async (req, res) => {
     const orderId = req.params.orderId;
-    const { status } = req.body;
+    const { status , discount } = req.body;
 
     // Find the order by orderId
     const order = await orderModel.findById(orderId);
@@ -117,11 +129,17 @@ export const changeOrderStatus = async (req, res) => {
     }
     
     // Update the product's status
-    order.status = status;
-
+    if(status) {
+        order.status = status;
+    }
+     
+    if(discount) {
+        order.finalPrice = order.finalPrice * (100 - discount)/100;
+    }
     // Save the updated order
     await order.save();
 
     return res.status(200).json({ message: "order status updated successfully" });
 };
+
 

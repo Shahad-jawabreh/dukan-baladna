@@ -1,4 +1,5 @@
 import categoryModel from "../../../DB/model/category.model.js"
+import productModel from "../../../DB/model/product.model.js"
 import userModel from "../../../DB/model/user.model.js"
 import cloudinary from "../../utls/uploadFile/cloudinary.js"
 import slugify from 'slugify'
@@ -72,4 +73,15 @@ export const getAllCategory =async (req,res,next)=>{
           const category= await categoryModel.create(req.body)
           return res.json({massege : "added successfully" , category})
       }
+ }
+
+ export const subProduct = async (req, res) => {
+    const {_id} = req.params ; 
+     const category = await categoryModel.findById(_id).select('name');
+     console.log(category)
+    const productForCategory = await productModel.find({category:category.name});
+    
+
+    return res.json({data:productForCategory});
+
  }

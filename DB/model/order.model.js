@@ -72,7 +72,10 @@ const orderSchema = new Schema({
     },
     couponId : {
         type : Types.ObjectId
-    } 
+    },
+    deadline: { // الموعد النهائي
+        type: Date,
+    }
 },
 {timestamps : true}
 )
