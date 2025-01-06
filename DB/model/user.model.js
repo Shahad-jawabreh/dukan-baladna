@@ -11,9 +11,7 @@ const userSchema = new Schema({
     required: true
   },
   email: {
-    type: String,
-    required: true,
-    unique: true
+    type: String
   },
   gender: {
     type: String,
@@ -26,7 +24,16 @@ const userSchema = new Schema({
     type: String
   },
   address: {
-    type: String
+    type: Object,
+     address: {
+       type : String
+     },
+    latitude: {
+        type: Number,
+      },
+      longitude: {
+        type: Number,
+      }
   },
   confirmEmail: {
     type: Boolean,
@@ -64,6 +71,9 @@ const userSchema = new Schema({
   },
   commission: {
     type: Number,
+  },
+  carNumber : {
+    type: String
   },
   specialization: { // for cooker
     type: String, 

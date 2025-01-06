@@ -11,7 +11,7 @@ import locationRouter from './src/modules/location/location.router.js'
 import complaintRouter from './src/modules/complaint/complaint.router.js'
 import notificationRouter from './src/modules/notification/notification.router.js'
 import reviewRouter from './src/modules/review/review.router.js'
-
+import commissionsRouter from './src/modules/system/system.router.js';
 import cors from 'cors'
 const initApp=(express,app)=>{
     
@@ -27,6 +27,7 @@ const initApp=(express,app)=>{
     app.use('/subCategories', subCategory);
     app.use('/order',orderRouter);
     app.use('/product', productRouter);
+    app.use('/commissions', commissionsRouter);
     app.use('/location', locationRouter);
     app.use('/cart', cartRouter);
     app.use('/profit', cartRouter);

@@ -31,6 +31,31 @@ export const getUserProfile = async (req, res) => {
      const userExist = await userModel.findOne({email:req.body.email, _id :{$ne:id} })
      if(userExist)return res.status(400).json({message:'email is already exists'});
   }
+   // Handle address object
+   if (req.body.address) {
+    const { address, longitude, latitude } = JSON.parse(req.body.address);
+    console.log(req.body.address);
+    console.log(latitude);
+    console.log(address);
+    console.log(longitude);
+    // Ensure all address fields are provided
+    if (!address || !longitude || !latitude) {
+        return res.status(400).json({ message: 'Incomplete address information' });
+    }
+
+    // Validate that longitude and latitude are numbers
+    if (isNaN(parseFloat(longitude)) || isNaN(parseFloat(latitude))) {
+        return res.status(400).json({ message: 'Invalid latitude or longitude values' });
+    }
+
+    // Assign parsed values back to req.body
+    req.body.address = {
+        address: address,
+        longitude: parseFloat(longitude),
+        latitude: parseFloat(latitude),
+    };
+}
+
   if(req.body.password) {
     const userExist = await userModel.findById(id).select('password')
     const checkPassword =await bcrypt.compare(req.body.pastPassword, userExist.password)
@@ -43,7 +68,7 @@ export const getUserProfile = async (req, res) => {
 
     const update = await userModel.findByIdAndUpdate(id , {...req.body},{ new: true });
     if(!update) { 
-         return res.status(400).json({message: "error updating"})
+         return res.status(400).json({message: update})
     }
     return res.status(200).json({message: "update successfully"})
 }

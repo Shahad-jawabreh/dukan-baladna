@@ -27,15 +27,26 @@ export const login =async (req,res,next)=>{
 }
 
 export const signup =async (req,res)=>{
-    const {userName, password, email,specialization} = req.body; 
+    const {userName, password, email,specialization,address} = req.body; 
     const findUser = await userModel.find({email})
     if(findUser.length == 0){
         const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
-        const user = await userModel.create({userName, password:hashPassword, email,specialization})
+        const user = await userModel.create({userName, password:hashPassword, email,specialization,address})
         const token = jwt.sign({_id:user._id ,role : user.role ,email},process.env.secretKeyToken, { expiresIn: '2h' });
         const subject = "confirm email" ;
         const html = `<a href='${req.protocol}://${req.headers.host}/user/confirmemail/${token}'>confirm email</a>`
         SendEmail(email,subject,html)
+        return res.json({massege : "added successfully",user})
+    }
+    return res.json({massege : "you are already exist"})
+}
+
+export const signupDriver =async (req,res)=>{
+    const {userName, password, carNumber, address , phoneNumber} = req.body; 
+    const findUser = await userModel.find({phoneNumber})
+    if(findUser.length == 0){
+        const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
+        const user = await userModel.create({userName, password:hashPassword, phoneNumber,address,carNumber,confirmEmail:true,role : "driver"})
         return res.json({massege : "added successfully",user})
     }
     return res.json({massege : "you are already exist"})
