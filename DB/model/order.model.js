@@ -68,7 +68,11 @@ const orderSchema = new Schema({
         default: 'معلق'
     },
     rejectReson : {
-        type : String
+        type : String 
+    },
+    driverId : {
+        type : Types.ObjectId ,
+        ref : 'users',
     },
     couponId : {
         type : Types.ObjectId

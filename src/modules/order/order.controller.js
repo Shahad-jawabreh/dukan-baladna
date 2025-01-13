@@ -120,7 +120,7 @@ export const getUserOrder = async(req, res) => {
 }
 export const changeOrderStatus = async (req, res) => {
     const orderId = req.params.orderId;
-    const { status , discount } = req.body;
+    const { status , discount , driverId} = req.body;
 
     // Find the order by orderId
     const order = await orderModel.findById(orderId);
@@ -135,6 +135,9 @@ export const changeOrderStatus = async (req, res) => {
      
     if(discount) {
         order.finalPrice = order.finalPrice * (100 - discount)/100;
+    }
+    if(driverId) {
+        order.driverId = driverId ;
     }
     // Save the updated order
     await order.save();

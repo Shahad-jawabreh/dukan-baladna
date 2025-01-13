@@ -13,8 +13,10 @@ import notificationRouter from './src/modules/notification/notification.router.j
 import reviewRouter from './src/modules/review/review.router.js'
 import commissionsRouter from './src/modules/system/system.router.js';
 import cors from 'cors'
-const initApp=(express,app)=>{
-    
+
+
+
+const initApp=(express,app)=>{ 
     app.use(cors());
     app.use(express.json());
     connection();

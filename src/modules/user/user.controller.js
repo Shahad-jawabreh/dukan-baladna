@@ -79,7 +79,7 @@ export const getAllUser = async (req, res) => {
 }
 
 export const getActiveUser = async (req, res) => {
-    const user = await userModel.find({status : 'active'}).select('image.secure_url userName status email -_id');
+    const user = await userModel.find({status : 'active'}).select('image.secure_url userName status address role email');
     return res.json({user})
 }
 
