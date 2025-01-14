@@ -4,7 +4,7 @@ import SendEmail from "../../utls/sendEmail.js";
 import jwt from 'jsonwebtoken'
 import { customAlphabet } from 'nanoid/non-secure'
 import axios from 'axios';
-//import admin from "./firebaseClient.js";
+import admin from "./firebaseClient.js";
 import mongoose from "mongoose";
 
 export const login = async (req, res, next) => {
@@ -47,12 +47,12 @@ export const login = async (req, res, next) => {
     );
 
 
-        // Generate Firebase Custom Token
-        // const customToken = await admin.auth().createCustomToken(user._id.toString(), {
-        //     role: user.role,
-        //     email: user.email || null,
-        //     phoneNumber: user.phoneNumber || null,
-        // });
+      //  Generate Firebase Custom Token
+        const customToken = await admin.auth().createCustomToken(user._id.toString(), {
+            role: user.role,
+            email: user.email || null,
+            phoneNumber: user.phoneNumber || null,
+        });
     
     // Respond with success
     return res.status(200).json({ message: "Welcome", token, role :user.role });

@@ -79,7 +79,7 @@ export const getAllCategory =async (req,res,next)=>{
     const {_id} = req.params ; 
      const category = await categoryModel.findById(_id).select('name');
      console.log(category)
-    const productForCategory = await productModel.find({category:category.name});
+    const productForCategory = await productModel.find({category:category.name,status : "مفعل"});
     
 
     return res.json({data:productForCategory});

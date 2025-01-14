@@ -59,6 +59,7 @@ export const addProduct = async (req, res) => {
     const user = await userModel.findById(req.user._id);
     if (user.role === 'saler') {
       req.body.salerName = user.userName;
+      req.body.secure_url = user.image.secure_url;
     }
 
     // Calculate price after discount, if applicable
@@ -194,7 +195,7 @@ export const getProduct = async (req, res) => {
     path: 'reviews',
     populate: {
       path: 'userId',
-      select: 'userName -_id',
+      select: 'userName image.secure_url -_id',
     },
   });
    return res.json({product})

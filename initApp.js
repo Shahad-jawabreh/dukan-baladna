@@ -12,6 +12,7 @@ import complaintRouter from './src/modules/complaint/complaint.router.js'
 import notificationRouter from './src/modules/notification/notification.router.js'
 import reviewRouter from './src/modules/review/review.router.js'
 import commissionsRouter from './src/modules/system/system.router.js';
+import favoriteRouter from './src/modules/favorite/favorite.router.js';
 import cors from 'cors'
 
 
@@ -25,6 +26,7 @@ const initApp=(express,app)=>{
     app.use('/complaint',complaintRouter);
     app.use('/coupon',couponRouter);
     app.use('/user',userRouter);
+    app.use('/favorite',favoriteRouter);
     app.use('/category', categoryRouter);
     app.use('/subCategories', subCategory);
     app.use('/order',orderRouter);

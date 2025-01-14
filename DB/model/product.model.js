@@ -50,9 +50,16 @@ const productSchema = new Schema({
         ref : 'users',
         required : true
     },
+    isFavorite : {
+        type : Boolean,
+        default : false
+    },
     salerName : {
         type : String,
         required : true
+    },
+    secure_url :{ 
+        type : String,
     },
     addOns: [
         {
