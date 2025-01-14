@@ -94,7 +94,7 @@ export const signupDriver =async (req,res)=>{
     }
     return res.json({massege : "you are already exist"})
 }
-
+//
 export const sendCode = async (req,res)=>{
     const {email} = req.body; 
     if((await userModel.find({email})).length !=0){
