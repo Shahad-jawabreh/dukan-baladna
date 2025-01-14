@@ -55,7 +55,7 @@ export const login = async (req, res, next) => {
         });
     
     // Respond with success
-    return res.status(200).json({ message: "Welcome", token, role :user.role });
+    return res.status(200).json({ message: "Welcome", token, role :user.role ,customToken});
 };
 
 export const loginFirebase = async (req, res) => {
