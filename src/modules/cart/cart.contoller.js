@@ -21,7 +21,7 @@ export const addProduct = async (req, res) => {
         // If no cart exists, create a new one
         const newCart = await cartModel.create({
           userId,
-          products: [{ productId, quantity , productName :product.name, image : product.mainImage.secure_url}],
+          products: [{ productId, quantity ,price:product.price, productName :product.name, image : product.mainImage.secure_url}],
         });
   
         return res.status(201).json({ message: 'Cart created and product added', cart: newCart });
@@ -37,10 +37,13 @@ export const addProduct = async (req, res) => {
     
         } else {
           // Add new product to the cart
-          cart.products.push({ productId, quantity , productName :product.name, image : product.mainImage.secure_url });
+          cart.products.push({ productId,price:product.price, quantity , productName :product.name, image : product.mainImage.secure_url });
         }
-  
-        // Save the updated cart
+        let total = 0;
+        for(let i = 0 ;i < cart.products.length ; i++) {
+          total += cart.products[i].quantity * cart.products[i].price;
+        }
+        cart.totalPrice = total;
         await cart.save();
   
         return res.status(200).json({ message: 'Product added to cart', cart });

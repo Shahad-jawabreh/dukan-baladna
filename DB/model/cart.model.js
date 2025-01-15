@@ -7,6 +7,9 @@ const cartSchema = new Schema({
         required : true,
         unique : true
     },
+    totalPrice : {
+        type : Number,    
+    },
     products : [{
         productId : {
             type : Types.ObjectId,
@@ -22,9 +25,9 @@ const cartSchema = new Schema({
             type : Number,
             default : 1
         },
-        totalPrice : {
-            type : Number,    
-        }
+        price :{
+            type : Number,
+        },
     }]
 })
 
