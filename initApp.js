@@ -13,6 +13,7 @@ import notificationRouter from './src/modules/notification/notification.router.j
 import reviewRouter from './src/modules/review/review.router.js'
 import commissionsRouter from './src/modules/system/system.router.js';
 import favoriteRouter from './src/modules/favorite/favorite.router.js';
+import gptRouter from './src/modules/GPT/gpt.js';
 import cors from 'cors'
 
 
@@ -28,6 +29,7 @@ const initApp=(express,app)=>{
     app.use('/user',userRouter);
     app.use('/favorite',favoriteRouter);
     app.use('/category', categoryRouter);
+    app.use('/gpt', gptRouter);
     app.use('/subCategories', subCategory);
     app.use('/order',orderRouter);
     app.use('/product', productRouter);
