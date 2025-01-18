@@ -9,7 +9,7 @@ const router = Router();
 router.get('/confirmemail/:token', userController.confirmEmail)
 router.get('/profile', authorization(Object.values(role)) , errorHandler(userController.getUserProfile))
 router.patch('/profile/:id', authorization(Object.values(role)),fileUpload(fileType.image).single('image') ,errorHandler(userController.updateProfile))
-router.get('/allusers', authorization([role.admin]) , errorHandler(userController.getAllUser))
+router.get('/allusers', authorization(Object.values(role)) , errorHandler(userController.getAllUser))
 router.get('/activeuser', errorHandler(userController.getActiveUser))
 
 router.patch('/allusers/:id', authorization([role.admin]) , errorHandler(userController.changeUserStatus))

@@ -73,7 +73,7 @@ export const getUserProfile = async (req, res) => {
     return res.status(200).json({message: "update successfully"})
 }
 export const getAllUser = async (req, res) => {
-    const user = await userModel.find({ role: { $ne: "admin" } })
+    const user = await userModel.find({ role: { $ne: "admin" },status : "active" })
     .select('image.secure_url phoneNumber rating userName status email _id role address');
    return res.json({user})
 }

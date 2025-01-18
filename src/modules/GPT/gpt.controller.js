@@ -8,7 +8,7 @@ export const gpt = async(req, res) => {
         
             const requestBody = [
                 {
-                    content: `Give me names of dishes that can be made with ${productName} in arabic`,
+                    content: `Give me names of dishes that can be made with ${productName}`,
                     role: 'user'
                 }
             ];

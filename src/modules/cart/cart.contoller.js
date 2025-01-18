@@ -20,8 +20,8 @@ export const addProduct = async (req, res) => {
       if (!cart) {
         // If no cart exists, create a new one
         const newCart = await cartModel.create({
-          userId,
-          products: [{ productId, quantity ,price:product.price, productName :product.name, image : product.mainImage.secure_url}],
+          userId, 
+          products: [{ salerId : product.createdBy,salerName : product.salerName,productId, quantity ,price:product.price, productName :product.name, image : product.mainImage.secure_url}],
         });
   
         return res.status(201).json({ message: 'Cart created and product added', cart: newCart });
@@ -37,7 +37,7 @@ export const addProduct = async (req, res) => {
     
         } else {
           // Add new product to the cart
-          cart.products.push({ productId,price:product.price, quantity , productName :product.name, image : product.mainImage.secure_url });
+          cart.products.push({salerId : product.createdBy,salerName : product.salerName, productId,price:product.price, quantity , productName :product.name, image : product.mainImage.secure_url });
         }
         let total = 0;
         for(let i = 0 ;i < cart.products.length ; i++) {
@@ -113,8 +113,16 @@ export const updateQuantity = async (req,res) =>{
     const { operator } = req.body;
     const  userId  = req.user._id;
     const { productId } = req.params;
+    let {totalPrice} = await cartModel.findOne({userId}).select('totalPrice');
+    console.log(totalPrice)
+    const {price} = await productModel.findById(productId).select('price');
     const inc = (operator === "+") ? 1 : -1;
-
+    
+    if(operator == '+') {
+      totalPrice += price ;
+    }else {
+      totalPrice -= price ;
+    }
     const cart = await cartModel.findOneAndUpdate(
         {
             userId,
@@ -123,7 +131,8 @@ export const updateQuantity = async (req,res) =>{
         {
             $inc: {
                 'products.$.quantity': inc
-            }
+            },
+            totalPrice
         },
         { new: true }
     );

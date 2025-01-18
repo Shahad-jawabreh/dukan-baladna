@@ -28,6 +28,12 @@ const cartSchema = new Schema({
         price :{
             type : Number,
         },
+        salerName : {
+            type : String
+        },
+        salerId : {
+            type : String
+        } 
     }]
 })
 

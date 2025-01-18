@@ -10,10 +10,21 @@ const couponSchema = new Schema({
         type : Number ,
         required : true ,
     },
-    usedBy : [{
-        type : Types.ObjectId ,
-        ref : 'users',
-    }],
+    couponType : {
+        type : String ,
+    },
+    usedBy: [{
+        userId:{
+           type : Types.ObjectId ,
+            ref : 'users',
+          },
+           userName: String,
+   
+       }],
+    usageCount:{
+        type: Number,
+        default : 0
+      },
     expireDate :{
         type : Date , 
         required : true
@@ -23,7 +34,9 @@ const couponSchema = new Schema({
         ref : 'users',
         required : true
     }
-})
+},
+{timestamps : true}
+)
 
 const couponModel = model('coupons',couponSchema)
 
