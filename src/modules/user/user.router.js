@@ -11,7 +11,7 @@ router.get('/profile', authorization(Object.values(role)) , errorHandler(userCon
 router.patch('/profile/:id', authorization(Object.values(role)),fileUpload(fileType.image).single('image') ,errorHandler(userController.updateProfile))
 router.get('/allusers', authorization(Object.values(role)) , errorHandler(userController.getAllUser))
 router.get('/activeuser', errorHandler(userController.getActiveUser))
-
+router.get('/bestCook', errorHandler(userController.bestCook))
 router.patch('/allusers/:id', authorization([role.admin]) , errorHandler(userController.changeUserStatus))
  
 export default router

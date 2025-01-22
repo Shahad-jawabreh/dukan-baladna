@@ -73,7 +73,7 @@ export const getUserProfile = async (req, res) => {
     return res.status(200).json({message: "update successfully"})
 }
 export const getAllUser = async (req, res) => {
-    const user = await userModel.find({ role: { $ne: "admin" },status : "active" })
+    const user = await userModel.find({ role: { $ne: "admin" }})
     .select('image.secure_url phoneNumber rating userName status email _id role address');
    return res.json({user})
 }
@@ -82,7 +82,15 @@ export const getActiveUser = async (req, res) => {
     const user = await userModel.find({status : 'active'}).select('image.secure_url userName status address role email');
     return res.json({user})
 }
-
+export const bestCook = async (req,res)=>{
+    
+    const bestCooker = await userModel.find({ status: 'active', role: 'saler' })
+    .sort({ rating: -1 }) // ترتيب تنازلي حسب rating (-1)
+    .limit(5);
+    
+    console.log(bestCooker);
+    return res.json({bestCooker})
+}
 export const changeUserStatus = async (req, res) => {
    const {id} = req.params ;
    const {status} = req.body ;

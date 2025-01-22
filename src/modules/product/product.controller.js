@@ -5,10 +5,16 @@ import cloudinary from "../../utls/uploadFile/cloudinary.js";
 import { pagination } from "../../utls/pagination.js";
 import userModel from "../../../DB/model/user.model.js";
 import orderModel from "../../../DB/model/order.model.js";
-
-// Function to detect the category
 export const addProduct = async (req, res) => {
-  const { name, price, detectedCategory, deliveryStatus, addOns, stock } = req.body; // Ensure stock is passed in the request body
+  const {
+    name,
+    detectedCategory,
+    deliveryStatus,
+    addOns,
+    stock,
+    preparationTime,
+    sizes // Get sizes data from request
+  } = req.body;
 
   try {
     // Check if the product already exists
@@ -18,7 +24,7 @@ export const addProduct = async (req, res) => {
     }
 
     // Handle delivery status and stock
-    if (deliveryStatus == "فوري") {
+    if (deliveryStatus === "فوري") {
       req.body.deliveryStatus = deliveryStatus;
       req.body.stock = parseInt(stock, 10); // Ensure stock is a number
       if (isNaN(req.body.stock) || req.body.stock < 0) {
@@ -26,19 +32,14 @@ export const addProduct = async (req, res) => {
       }
     } else {
       req.body.deliveryStatus = "حسب الطلب";
+      req.body.preparationTime = preparationTime;
     }
 
     // Handle addOns if they exist
-    console.log(addOns);
-
-    
     if (addOns) {
       try {
         // In case the data is received as a string, parse it
         const parsedAddOns = Array.isArray(addOns) ? addOns : JSON.parse(addOns);
-        console.log(typeof parsedAddOns);  // To see the parsed array
-    
-        // Now you can safely map through the array
         req.body.addOns = parsedAddOns.map((addOn) => ({
           name: addOn.name,
           price: addOn.price,
@@ -48,6 +49,27 @@ export const addProduct = async (req, res) => {
         return res.status(400).json({ message: "Invalid addOns format" });
       }
     }
+
+   // Handle sizes with min/max number of people
+  if (sizes) {
+    try {
+      const parsedSizes = JSON.parse(sizes); // Parse the sizes string
+       if (typeof parsedSizes !== 'object' || parsedSizes === null || Array.isArray(parsedSizes)) {
+          return res.status(400).json({ message: "Invalid sizes format" });
+        }
+      req.body.sizeOfProduct = Object.entries(parsedSizes).map(([size, details]) => ({
+         size: size,
+         price: details.price,
+          minNumberOfpeople: details.minNumberOfpeople, 
+ maxNumberOfpeople: details.maxNumberOfpeople,
+      }));
+    } catch (error) {
+      console.error("Error parsing sizes:", error);
+      return res.status(400).json({ message: "Invalid sizes format" });
+    }
+  }
+
+
     // Add the detected category to the product
     req.body.category = detectedCategory;
 
@@ -76,8 +98,6 @@ export const addProduct = async (req, res) => {
              req.body.mainImage = { secure_url, public_url };
          }
 
-      
-
     // Create the product in the database
     const addedProduct = await productModel.create(req.body);
 
@@ -89,7 +109,15 @@ export const addProduct = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
+export const getNewProduct = async (req, res) => {
+  const date = new Date();
+    date.setDate(date.getDate() - 7);  // Subtract days from today
+    const newProducts = await productModel.find({
+      createdAt: { $gte: date }, //Find documents with createdAt >= date
+    }).sort({createdAt: -1}); // Sort by most recent first
+       
+      return res.json({newProducts});
+}
 export const getProduct = async (req, res) => {
    try {
      const page = req.query.page || 1;

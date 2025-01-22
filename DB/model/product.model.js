@@ -8,6 +8,27 @@ const productSchema = new Schema({
     mainImage : {
         type : Object 
     },
+    preparationTime: { 
+        type :Date
+    },
+    sizeOfProduct : 
+        [{
+            size : {
+                type : String,
+                enum : ["صغير","وسط","كبير"]
+            },
+            price : {
+                type : Number
+            },
+            minNumberOfpeople : { 
+                type : Number
+            },
+           maxNumberOfpeople : { 
+                type : Number
+            }
+
+        }]
+    ,
     slug : {
         type : String ,
         required : true

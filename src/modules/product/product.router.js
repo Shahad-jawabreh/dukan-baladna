@@ -12,6 +12,7 @@ router.get('/cooker/:id', projectController.getProductForCooker)
 router.patch('/:id', authorization(role.saler),fileUpload(fileType.image).single('image') ,errorHandler(projectController.updateProduct))
 router.get('/', projectController.getProduct)
 
+router.get('/new', errorHandler(projectController.getNewProduct))
 router.get('/info/:_id', projectController.getInfoProduct)
 
 router.use('/:productId/reviews',reviewRouter)

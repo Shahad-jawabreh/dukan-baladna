@@ -45,6 +45,9 @@ const orderSchema = new Schema({
        type : String ,
        required : true
     },
+    cookAddress :{ 
+        type : String ,
+    },
     finalPrice :{
         type : Number,
         required : true   
