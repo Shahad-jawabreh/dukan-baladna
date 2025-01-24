@@ -8,9 +8,16 @@ const productSchema = new Schema({
     mainImage : {
         type : Object 
     },
-    preparationTime: { 
-        type :Date
-    },
+    preparationTime: 
+        [{
+            min:{
+                type : Number
+            },
+            hour: {
+                type : Number
+            }
+}]
+    ,
     sizeOfProduct : 
         [{
             size : {

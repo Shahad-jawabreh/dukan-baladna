@@ -15,21 +15,22 @@ export const createReview =async (req,res,next)=>{
     const {productId} = req.params;
 
     const {name} = await productModel.findById(productId).select('name')
-
+    console.log(name)
     const order = await orderModel.findOne({
     userId, 
-    status : "delivered",
+    status : "تم التوصيل",
     "products.productId" : productId ,
     })
+    console.log(order)
     if(!order) {
-        return res.status(400).json({massage : "you cannot review this product"})
+        return res.status(400).json({massage : "لا يمكنك إضافة تقييم إلا بعد استلام المنتج."})
     }
     const checkRev = await reviewModel.findOne({
      userId, 
     productId 
     })
     if(checkRev) {
-        return res.status(400).json({massage : "you are already reviewed"})
+        return res.status(400).json({massage : "تم التعليق سابقا"})
     }
     if(req.file){
         const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
@@ -40,7 +41,7 @@ export const createReview =async (req,res,next)=>{
     const rev = await reviewModel.create({
         comment , rating , userId , productId , image : req.body.image,  userName , productName : name
     })
-    return res.json({massage : rev})
+    return res.status(200).json({massage : rev})
 }
 
 export const replyToReview = async (req, res) => {
@@ -54,3 +55,13 @@ export const replyToReview = async (req, res) => {
 
 }
 
+
+export const editReview = async(req, res) => {
+    const {rating , comment} = req.body ;
+    const {reviewId} = req.params ;
+    const rev = await reviewModel.findByIdAndUpdate(reviewId,{rating,comment}) ;
+   if(rev){
+    return res.status(200).json({message : 'success'})
+   }
+   return res.status(400).json({message : 'error'})
+}

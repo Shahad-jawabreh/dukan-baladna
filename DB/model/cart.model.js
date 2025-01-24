@@ -33,7 +33,21 @@ const cartSchema = new Schema({
         },
         salerId : {
             type : String
-        } 
+        },
+        size : {
+            type : String,
+            enum : ['صغير','وسط','كبير']
+        },
+        notes : {
+            type : String,
+        },
+        addons: [
+            {
+                name: { type: String }, 
+                price: { type: Number}, 
+            }
+        ],
+        
     }]
 })
 

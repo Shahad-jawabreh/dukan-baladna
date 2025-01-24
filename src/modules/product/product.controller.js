@@ -32,7 +32,8 @@ export const addProduct = async (req, res) => {
       }
     } else {
       req.body.deliveryStatus = "حسب الطلب";
-      req.body.preparationTime = preparationTime;
+      const parsedPreparationTime =  typeof preparationTime === 'string' ? JSON.parse(preparationTime) : preparationTime;
+      req.body.preparationTime = parsedPreparationTime;
     }
 
     // Handle addOns if they exist
@@ -223,9 +224,10 @@ export const getProduct = async (req, res) => {
     path: 'reviews',
     populate: {
       path: 'userId',
-      select: 'userName image.secure_url -_id',
+      select: 'userName userId -_id',
     },
   });
+  
    return res.json({product})
  }
 
