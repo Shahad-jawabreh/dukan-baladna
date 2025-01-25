@@ -6,92 +6,84 @@ import userModel from "../../../DB/model/user.model.js";
 import { customAlphabet } from 'nanoid/non-secure'
 
 export const create = async (req, res, next) => {
-    try {
-        let coupon;
-        const cart = await cartModel.findOne({ userId: req.user._id });
-        if (!cart) {
-            return res.status(400).json({ message: "Cart is empty" });
+  try {
+      const {
+          products,
+          finalPrice,
+          phoneNumber,
+          paymentType,
+           cookerId,
+           couponName
+         } = req.body;
+          
+
+    if (!products || products.length === 0) {
+          return res.status(400).json({ message: "Products is required" });
+      }
+
+       
+        if (!phoneNumber) {
+          return res.status(400).json({ message: "Phone number is required" });
+      }
+       if (!cookerId) {
+        return res.status(400).json({ message: "Cooker ID is required" });
         }
-
-        // Validate coupon if provided
-        if (req.body.name) {
-            coupon = await couponModel.findOne({ name: req.body.name });
-            if (!coupon || coupon.expireDate < new Date()) {
-                return res.status(400).json({ message: "Coupon expired" });
-            }
-            if (coupon.usedBy.includes(req.user._id)) {
-                return res.status(400).json({ message: "Coupon already used" });
-            }
-            req.body.coupon = coupon; // Attach coupon to request body
-        }
-
-        let finalProductList = [];
-        let subTotal = 0;
-
-        for (let product of cart.products) {
-            const checkProduct = await productModel.findOne({
-                _id: product.productId,
-                stock: { $gte: product.quantity },
-            });
-
-            if (!checkProduct) {
-                return res.status(400).json({ message: "Product stock is insufficient" });
-            }
-
-            product = product.toObject();
-            product.name = checkProduct.name;
-            product.unitPrice = checkProduct.price;
-            product.finalPrice = product.quantity * checkProduct.price;
-            product.status = "pending"; // Initial status for each product
-            subTotal += product.finalPrice;
-
-            finalProductList.push(product);
-        }
-
-        const deadline = new Date();
-        deadline.setDate(deadline.getDate() + 2); // Set deadline to 2 days from now
-
+        const cookAddress = await userModel.findById(cookerId).select('address')
+        const userAddress = await userModel.findById({_id:req.user._id}).select('address')
+       console.log(cookAddress)
         const user = await userModel.findById(req.user._id);
-
-        const order = await orderModel.create({
-            userId: req.user._id,
-            products: finalProductList,
-            finalPrice: subTotal - (subTotal * (coupon?.amount || 0)) / 100,
-            address: user.address,
-            phoneNumber: user.phoneNumber,
-            userName: user.userName,
-            orderNum: customAlphabet("1234567890abcdef", 4)(),
-            deadline: deadline, 
-        });
-
-        if (order) {
-            for (const product of order.products) {
-                await productModel.findByIdAndUpdate(
-                    { _id: product.productId },
-                    {
-                        $inc: {
-                            stock: -product.quantity,
-                        },
-                    }
-                );
-            }
-            if (req.body.coupon) {
-                await couponModel.findByIdAndUpdate(
-                    { _id: req.body.coupon._id },
-                    {
-                        $addToSet: {
-                            usedBy: req.user._id,
-                        },
-                    }
-                );
-            }
+ 
+          if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
+          const orderNum = customAlphabet("1234567890abcdef", 4)()
 
-        return res.status(200).json({ order });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "An error occurred", error });
-    }
+
+    const order = await orderModel.create({
+            userId: req.user._id,
+            products: products.map(product => ({
+                 productId : product.productId,
+                 productName : product.productName,
+                 image : product.image,
+                quantity: product.quantity,
+                price: product.price,
+                size : product.size,
+                salerName: product.salerName,
+                salerId : product.salerId,
+                 notes : product.notes,
+                 addons: product.addons,
+                
+            })),
+            finalPrice: finalPrice,
+            userAddress:userAddress.address,
+            cookAddress:cookAddress.address,
+            phoneNumber: phoneNumber,
+            paymentType: paymentType,
+            userName: user.userName,
+            orderNum: orderNum,
+             cookerId: cookerId,
+             couponName,
+    });
+
+     if (order) {
+        for (const product of order.products) {
+          await productModel.findByIdAndUpdate(
+              { _id: product.productId },
+                {
+                   $inc: {
+                       stock: -product.quantity,
+                   },
+               }
+            );
+         }
+      }
+
+
+    return res.status(201).json({ message: 'Order created successfully', order });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "An error occurred", error: error.message });
+  }
 };
 
 export const getOrder = async (req, res) => {
@@ -116,6 +108,9 @@ export const getallOrder = async (req, res) => {
 }
 export const getUserOrder = async(req, res) => {
     const orders = await orderModel.find({userId : req.user._id});
+    if(!orders){
+        return res.status(400).json({massge : "error"})
+    }
     return res.status(200).json({orders})
 }
 export const changeOrderStatus = async (req, res) => {

@@ -38,6 +38,7 @@ export const createReview =async (req,res,next)=>{
         })
         req.body.image = {secure_url,public_url}
     }
+    
     const rev = await reviewModel.create({
         comment , rating , userId , productId , image : req.body.image,  userName , productName : name
     })

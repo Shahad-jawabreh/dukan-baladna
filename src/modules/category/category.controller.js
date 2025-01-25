@@ -1,5 +1,6 @@
 import categoryModel from "../../../DB/model/category.model.js"
 import productModel from "../../../DB/model/product.model.js"
+import reviewModel from "../../../DB/model/review.model.js"
 import userModel from "../../../DB/model/user.model.js"
 import cloudinary from "../../utls/uploadFile/cloudinary.js"
 import slugify from 'slugify'
@@ -79,8 +80,14 @@ export const getAllCategory =async (req,res,next)=>{
     const {_id} = req.params ; 
      const category = await categoryModel.findById(_id).select('name');
      console.log(category)
-    const productForCategory = await productModel.find({category:category.name,status : "مفعل"});
-    
+    const productForCategory = await productModel.find({category:category.name,status : "مفعل"}).populate({
+      path: 'reviews',
+      populate: {
+        path: 'userId',
+        select: 'userName _id',
+      },
+    });;
+    const rating  = await reviewModel.find({productId : _id}).select('rating');
 
     return res.json({data:productForCategory});
 

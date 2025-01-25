@@ -112,9 +112,16 @@ export const applyCoupon = async (req, res, next) => {
         if (coupon.expireDate < new Date()) {
            return res.status(400).json({ message: "الكوبون انتهت صلاحيتة" });
       }
+      await couponModel.findByIdAndUpdate(
+        { _id: coupon._id },
+        {
+            $addToSet: {
+                usedBy: { id: userId },
+            },
+        }
+    );
       console.log(createdBy.toString());
-      console.log("createdBy");
-      console.log(coupon.createdBy.toString());
+      console.log(coupon);
       if(coupon.createdBy.toString() !== createdBy.toString()){
            return res.status(400).json({ message: "هذا الكوبون غير صالح لهذا الطباخ" });
         }
@@ -123,11 +130,13 @@ export const applyCoupon = async (req, res, next) => {
          coupon.usedBy.push({userId : userId, userName: req.user.userName})
         coupon.usageCount +=1;
         await couponModel.findByIdAndUpdate(coupon._id, coupon)
+       }else {
+        return res.status(200).json({ message: "الكوبون صالح للاستخدام مرة واحدة فقط.", coupon: coupon });
        }
 
-      return res.status(200).json({ message: "Coupon applied successfully", coupon: coupon });
+      return res.status(200).json({ message: "تم تطبيق الكوبون بنجاح", coupon: coupon });
 
     } catch (error) {
-      return res.status(500).json({ message: "Failed to apply coupon" });
+      return res.status(500).json({ message:error.message });
    }
 };

@@ -8,6 +8,10 @@ const productSchema = new Schema({
     mainImage : {
         type : Object 
     },
+    rating :{
+       type : Number,
+       defualt : 0
+    },
     preparationTime: 
         [{
             min:{
