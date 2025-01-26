@@ -7,12 +7,14 @@ import productRouter from './src/modules/product/product.router.js'
 import cartRouter from './src/modules/cart/cart.router.js'
 import couponRouter from './src/modules/coupon/coupon.router.js'
 import orderRouter from './src/modules/order/order.router.js'
+import folowRouter from './src/modules/folowers/folowers.router.js'
 import locationRouter from './src/modules/location/location.router.js'
 import complaintRouter from './src/modules/complaint/complaint.router.js'
 import notificationRouter from './src/modules/notification/notification.router.js'
 import reviewRouter from './src/modules/review/review.router.js'
 import commissionsRouter from './src/modules/system/system.router.js';
 import favoriteRouter from './src/modules/favorite/favorite.router.js';
+import subscriptionsRouter from './src/modules/subsecripition/subsecripition.router.js';
 import gptRouter from './src/modules/GPT/gpt.js';
 import cors from 'cors'
 
@@ -30,12 +32,14 @@ const initApp=(express,app)=>{
     app.use('/favorite',favoriteRouter);
     app.use('/category', categoryRouter);
     app.use('/gpt', gptRouter);
+    app.use('/follows', folowRouter);
     app.use('/subCategories', subCategory);
     app.use('/order',orderRouter);
     app.use('/product', productRouter);
     app.use('/commissions', commissionsRouter);
     app.use('/location', locationRouter);
     app.use('/cart', cartRouter);
+    app.use('/subscriptions', subscriptionsRouter);
     app.use('/profit', cartRouter);
     app.use('/review', reviewRouter);
     app.use('/notification', notificationRouter);

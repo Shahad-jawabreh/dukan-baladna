@@ -133,7 +133,6 @@ export const changeOrderStatus = async (req, res) => {
     }
     if(driverId) {
         order.driverId = driverId ;
-        order.cookAdress = cookAdress;
     }
     // Save the updated order
     await order.save();

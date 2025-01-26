@@ -2,6 +2,7 @@ import userModel from "../../../DB/model/user.model.js";
 import jwt from 'jsonwebtoken' ;
 import cloudinary from "./../../utls/uploadFile/cloudinary.js";
 import bcrypt from 'bcryptjs' 
+import productModel from "../../../DB/model/product.model.js";
 
 export const confirmEmail =async (req,res,next)=>{
     const token = req.params.token ;
@@ -18,7 +19,14 @@ export const getUserProfile = async (req, res) => {
     }
     return res.status(200).json(user)
  }
-
+ export const getCook = async (req, res) => {
+    const user = await userModel.findById(req.params.id);
+    console.log(user);  
+    if (user.status == "not_active") {
+        return res.status(400).json({massega : "you are blocked"})
+    }
+    return res.status(200).json({user})
+ }
  export const updateProfile = async (req, res) => {
     const {id} = req.params ;
     if(req.file){
@@ -80,6 +88,7 @@ export const getAllUser = async (req, res) => {
 
 export const getActiveUser = async (req, res) => {
     const user = await userModel.find({status : 'active'}).select('image.secure_url userName status address role email');
+    
     return res.json({user})
 }
 export const bestCook = async (req,res)=>{
@@ -100,4 +109,32 @@ export const changeUserStatus = async (req, res) => {
    }
    return res.status(200).json({massege  : "success"});
 }
+
+export const cookproduct = async (req, res) => {
+    try {
+        // Fetch all active salers
+        const users = await userModel.find({ status: 'active', role: 'saler' })
+            .select('_id image.secure_url userName');
+        
+        // Map through users and fetch their products
+        const result = await Promise.all(users.map(async (user) => {
+            const products = await productModel.find({ createdBy: user._id })
+                .select('name price sizeOfProduct'); // Select product names only
+            
+            // Construct response object for each user
+            return {
+                name: user.userName,
+                image: user.image.secure_url,
+                meals: products,
+                _id : user._id
+            };
+        }));
+
+        // Send the result
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
