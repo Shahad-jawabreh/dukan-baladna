@@ -15,6 +15,7 @@ import reviewRouter from './src/modules/review/review.router.js'
 import commissionsRouter from './src/modules/system/system.router.js';
 import favoriteRouter from './src/modules/favorite/favorite.router.js';
 import subscriptionsRouter from './src/modules/subsecripition/subsecripition.router.js';
+import specialOrderRouter from './src/modules/specialOrder/specialOrder.router.js';
 import gptRouter from './src/modules/GPT/gpt.js';
 import cors from 'cors'
 
@@ -40,7 +41,8 @@ const initApp=(express,app)=>{
     app.use('/location', locationRouter);
     app.use('/cart', cartRouter);
     app.use('/subscriptions', subscriptionsRouter);
-    app.use('/profit', cartRouter);
+    app.use('/specialOrder', specialOrderRouter);
+    app.use('/profit', cartRouter); 
     app.use('/review', reviewRouter);
     app.use('/notification', notificationRouter);
     app.use('*',(req,res)=>{return res.status(404).json({massege : "this page not found"})})

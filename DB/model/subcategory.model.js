@@ -13,7 +13,7 @@ const subCategorySchema = new Schema({
     },
     image : {
         type : Object ,
-        required : true
+        required : true 
     },
     slug : {
         type : String ,

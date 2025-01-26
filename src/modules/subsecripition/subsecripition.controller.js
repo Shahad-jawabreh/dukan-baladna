@@ -2,9 +2,8 @@ import subscriptionsModel from "../../../DB/model/Subscription .model.js";
 
 export const addSubscribe =async (req,res)   => {
     try {
-        const { chef, meal, schedule, notes, time, day,selectedSize } = req.body;
+        const {cookName, chef, meal, schedule, notes, time, day,selectedSize } = req.body;
         const cookId = chef;
-   
         const customerId = req.user._id ;// Assuming user ID is available from the authentication middleware
          const customerName = req.user.name; // Assuming user name is available from the authentication middleware
 
@@ -21,12 +20,13 @@ export const addSubscribe =async (req,res)   => {
          customerId,
          cookId,
          customerName,
+         cookName,
          meal: meal.name,
          price,
           schedule: [{
               schadule: schedule,
               day : day,
-              time : [{hour: time.hour, min: time.minute}]
+              time : [{hour: time.hour, min: time.min}]
           }],
             note: notes,
        });
@@ -46,4 +46,10 @@ export const addSubscribe =async (req,res)   => {
             error: error.message,
        });
    }
+}
+
+export const getSubscribe = async(req, res) => {
+    const {_id} = req.user ;
+    const subscription = await subscriptionsModel.find({customerId : _id});
+    return res.json(subscription)
 }
