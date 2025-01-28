@@ -15,9 +15,13 @@ export const addspecialOrder =async (req,res)   => {
 
 export const getspecialOrder = async(req, res) => {
     const sp = await specialModel.find({userId : req.user._id});
-    if(!sp){
-        return res.status(400).json(sp)
-
+    const spCook = await specialModel.find({chefId : req.user._id});
+    console.log(spCook)
+    if(sp.length !=0){
+        return res.status(200).json(sp)
     }
-    return res.json(sp)
+    if(spCook.length !=0){
+        return res.status(200).json(spCook)
+    }
+    return res.status(400).json({massege : "error"})
 }

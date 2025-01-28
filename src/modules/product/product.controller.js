@@ -230,26 +230,71 @@ export const getProduct = async (req, res) => {
   
    return res.json({product})
  }
+ 
+ export const updateProduct = async (req, res) => {
+  const { id } = req.params;
 
- export const updateProduct = async(req, res) =>{
-    const {id} = req.params ;
-    if(req.file){
-      const {secure_url,public_url} = await cloudinary.uploader.upload(req.file.path,{
-          folder : `${process.env.appname}/product`
-      })
-      console.log(secure_url);
-           req.body.mainImage = {secure_url,public_url}
+  if (req.file) {
+    const { secure_url, public_url } = await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        folder: `${process.env.appname}/product`,
+      }
+    );
+    console.log(secure_url);
+    req.body.mainImage = { secure_url, public_url };
   }
-  if(req.body.name) {
-     const productExist = await productModel.findOne({name:req.body.name, _id :{$ne:id} , createdBy : req.user._id })
-     if(productExist)return res.status(400).json({message:'هذا المنتج موجود بالفعل'});
-  }
-  console.log({...req.body});
 
-    const update = await productModel.findByIdAndUpdate(id , {...req.body},{ new: true });
-    if(!update) { 
-         return res.status(400).json({message: "error updating"})
+  if (req.body.name) {
+    const productExist = await productModel.findOne({
+      name: req.body.name,
+      _id: { $ne: id },
+      createdBy: req.user._id,
+    });
+    if (productExist)
+      return res.status(400).json({ message: "هذا المنتج موجود بالفعل" });
+  }
+  // Parse JSON strings to objects
+  if (req.body.preparationTime) {
+        try {
+        req.body.preparationTime = JSON.parse(req.body.preparationTime);
+        } catch (error){
+              console.error("Error parsing preparationTime", error);
+              return res.status(400).json({message: "Error parsing preparationTime data"});
+          }
     }
-    return res.status(200).json({message: "update successfully"})
+    if (req.body.sizeOfProduct) {
+        try{
+           req.body.sizeOfProduct = JSON.parse(req.body.sizeOfProduct);
+          } catch(error) {
+              console.error("Error parsing sizeOfProduct", error);
+              return res.status(400).json({message: "Error parsing sizeOfProduct data"});
+          }
+    }
+      if (req.body.addOns) {
+        try{
+           req.body.addOns = JSON.parse(req.body.addOns);
+          } catch(error){
+              console.error("Error parsing addOns", error);
+              return res.status(400).json({message: "Error parsing addOns data"});
+          }
+    }
 
- }
+
+   console.log({...req.body});
+
+
+  try {
+        const update = await productModel.findByIdAndUpdate(id, { ...req.body }, { new: true });
+         console.log(update);
+    if (!update) {
+      return res.status(400).json({ message: "error updating" });
+    }
+    return res.status(200).json({ message: "update successfully" });
+    } catch (error) {
+     console.error("Error during update:", error)
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+
+};

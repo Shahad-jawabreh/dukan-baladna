@@ -18,7 +18,7 @@ export const updateCommission = async (req, res) => {
 
         if (req.body.cookCommission) {
             updates.cookCommission = req.body.cookCommission;
-            ؤ
+            
         }
         if (req.body.driverCommission) {
             updates.driverCommission = req.body.driverCommission;

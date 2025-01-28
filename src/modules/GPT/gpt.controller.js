@@ -8,13 +8,13 @@ export const gpt = async(req, res) => {
         
             const requestBody = [
                 {
-                    content: `أعطني أسماء أطباق دسمة يمكن صنعها باستخدام ${productName}، مع ذكرها على شكل نقاط.`,
+                    content: `أعطني أسماء أطباق فلسطينية يمكن صنعها باستخدام ${productName}، مع ذكرها على شكل نقاط.`,
                     role: 'user'
                 }
             ]; 
          
             const options = {
-                method: 'POST',
+                method: 'POST', 
                 url: 'https://chatgpt-api8.p.rapidapi.com/',
                 headers: {
                     'Content-Type': 'application/json',
